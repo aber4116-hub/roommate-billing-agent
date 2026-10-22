@@ -2,7 +2,7 @@
 
 合租账单分摊与结算 Agent。
 
-> Release candidate：`v0.1.0-rc.1`。本地验证通过；Docker/CI 运行时尚未验证。
+> Release candidate：`v0.1.0-rc.1`。本地验证通过；Docker/CI 运行时尚未验证；尚未 push 到 GitHub。
 
 > 当前状态：阶段 0–6 已完成；阶段 7 的 Docker/Compose/Caddy/CI/备份恢复交付物已创建，备份恢复与本地 Caddy 内部 CA TLS 已真实演练，**Docker 运行时和 GitHub Actions 尚未执行**。不可按生产系统部署。
 >
@@ -33,6 +33,7 @@
 | [阶段 7 实现报告](docs/phase-7-report.md) | Docker/Compose/Caddy/CI、备份恢复、安全扫描；运行时未验证 |
 | [备份与恢复演练](docs/backup-restore.md) | pg_dump/pg_restore、逐表比对、恢复库健康检查 |
 | [安全扫描记录](docs/security-review.md) | pip-audit、hadolint、Caddy/Compose 验证、未验证项 |
+| [阶段 8 实现报告](docs/phase-8-report.md) | MIT、社区文档、本地 Git/bundle/zip、未推送 |
 | [架构与选型](docs/architecture.md) | 技术评估、架构图、目录结构、ADR |
 | [数据库设计](docs/database.md) | ER、字段、约束、索引、事务、备份、隔离 |
 | [REST API](docs/api.md) | 端点、权限、错误码、幂等、并发、示例 |
@@ -134,6 +135,15 @@ node docs/audits/legacy-split-audit.mjs
 
 **没有**声称已运行 Docker 或 CI，也没有声称已生产部署；没有使用真实模型 Key。
 
+### 阶段 8 文档/发布
+
+- MIT `LICENSE`；`legacy/` 除外（见 `NOTICE`）；
+- `CONTRIBUTING.md`、`SECURITY.md`、`CHANGELOG.md`、`RELEASE_NOTES.md`；
+- 本地 Git tag `v0.1.0-rc.1`；
+- tracked files 以 `git ls-files` 为准；`.env`/`.venv`/运行时不在库；
+- bundle/zip 已生成并做 clone 校验；
+- **尚未配置 GitHub remote、未 push、未运行 Actions**。
+
 ## 本地运行
 
 ```powershell
@@ -180,7 +190,7 @@ curl -fsS https://<DOMAIN>/health/ready
 
 ## 下一步
 
-阶段 7 运行时验收：在有 Docker 的 Linux 主机执行 build/up、公网 Caddy ACME TLS、GitHub Actions；通过后再进入阶段 8。
+本地交付已完成；剩余：提供 GitHub 远程并 push、在 Docker 环境执行 build/up + 公网 ACME TLS + Actions；通过后再发布正式版。
 
 ## 许可证
 

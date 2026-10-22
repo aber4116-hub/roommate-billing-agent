@@ -6,6 +6,32 @@
 
 ---
 
+## 0. 本地交付记录（2026-10-23）
+
+- 本地 Git：`main`，tag `v0.1.0-rc.1`；
+- tracked files：完整源码（具体数量由 `git ls-files` 为准）；
+- `.env` 未入库；`.venv`/`_runtime`/覆盖率/缓存均忽略；
+- 从 bundle 克隆验证：tag 正确、文件完整、`LICENSE`/`web` 存在、无 `.env`；
+- 未配置 GitHub remote、未 push。
+
+运行时产物（不提交仓库）：
+
+```text
+_runtime/roommate-billing-agent-v0.1.0-rc.1.bundle
+_runtime/roommate-billing-agent-v0.1.0-rc.1.zip
+_runtime/SHA256SUMS
+```
+
+具体哈希以 `_runtime/SHA256SUMS` 为准。
+
+推送前必须：
+
+1. 决定 Private/Public；
+2. 公开前处理 `legacy/合租账单分摊器.html`（MIT 不覆盖，见 `NOTICE`）；
+3. 决定是否等在 Docker/CI 运行时验收后再发布。
+
+---
+
 ## 1. 许可证：MIT（已采用）
 
 项目所有者已授权选择 **MIT**；`LICENSE` 已创建，README 已同步。下面是当时的影响说明，保留作决策记录。

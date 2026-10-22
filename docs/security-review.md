@@ -116,7 +116,7 @@ X-Frame-Options: DENY
 - 容器 `read_only`、`cap_drop: ALL`、`no-new-privileges`（API/Caddy）；
 - 登录 Cookie `Secure` 由生产 `.env` 开启；
 - 未在仓库中发现真实密码/API Key。
-- 实际扫描 150 个非 `.env`/非运行时文件：数据库密码与 `APP_SECRET_KEY` 命中 **0**。
+- 实际扫描 164 个非 `.env`/非运行时文件：数据库密码与 `APP_SECRET_KEY` 命中 **0**。
 
 ---
 

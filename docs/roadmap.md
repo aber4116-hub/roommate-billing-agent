@@ -1,6 +1,6 @@
 # 阶段 2–8：开发路线图与验收标准
 
-- 当前进度：阶段 0–6 已完成；阶段 7 交付物已创建，运行时（Docker/CI/TLS）未执行。
+- 当前进度：阶段 0–6 完成；阶段 7 交付物/备份/本地 Caddy TLS/静态验证完成，Docker/CI 运行时未执行；阶段 8 本地 rc.1 完成，未 push。
 - 规则：每次只推进一个阶段；上一阶段验收通过并经用户确认后，才进入下一阶段。
 - 金额、历史、权限、审计的正确性优先于功能数量。
 - 所有“已通过”必须有可复现命令与真实输出。
@@ -19,7 +19,7 @@
 | 5 | Agent/模型适配/确认 | provider、工具网关、pending actions、FakeProvider 测试 | ✅ 157 tests passed；coverage 88%；报告见 `docs/phase-5-report.md` |
 | 6 | 前端改造 | 登录、账期、账单、规则、结算、聊天、确认、导出 | ✅ 160 tests passed；coverage 88%；Chrome E2E 通过；报告见 `docs/phase-6-report.md` |
 | 7 | 测试/部署/CI/恢复 | Docker、Compose、Caddy、CI、备份恢复、安全检查 | ⚠️ 交付物/备份恢复/静态验证完成；Docker/CI 运行时未执行 |
-| 8 | README/许可证/发布 | README、LICENSE、CONTRIBUTING、SECURITY、Release | 公开发布检查通过 |
+| 8 | README/许可证/发布 | README、LICENSE、CONTRIBUTING、SECURITY、Release | ⚠️ MIT/本地 rc.1/bundle 完成；未 push/GitHub Release |
 
 ---
 
@@ -481,15 +481,15 @@ scripts/seed_demo.py
 
 ### 7.3 验收标准
 
-- [ ] README 命令全部验证；
-- [ ] LICENSE 已确认并一致；
-- [ ] CI 绿；
-- [ ] 无 secrets/真实数据；
-- [ ] 备份恢复文档；
-- [ ] 已知限制；
-- [ ] 贡献指南；
-- [ ] Release 可下载/可部署；
-- [ ] 仓库公开（如选择）。
+- [ ] README 命令全部验证（本地命令已验证；Docker 命令未跑）；
+- [x] LICENSE 已确认并一致（MIT）；
+- [ ] CI 绿（workflow 已写，未运行）；
+- [x] 无 secrets/真实数据（secret scan 0 hits）；
+- [x] 备份恢复文档；
+- [x] 已知限制；
+- [x] 贡献指南；
+- [ ] Release 可下载/可部署（本地 bundle/zip 有；GitHub Release 未创建）；
+- [ ] 仓库公开（当前默认 Private，未创建远程）。
 
 ---
 
@@ -575,9 +575,10 @@ scripts/seed_demo.py
 - 前端/CSP/Chrome E2E；
 - Docker/Compose/Caddy/CI/备份恢复交付物；
 - 本地备份恢复真实演练与非 Docker 安全检查；
-- 阶段 8 路线图。
+- MIT、社区文档、本地 Git `v0.1.0-rc.1`、bundle/zip；
+- GitHub 远程/Release 待推送。
 
-**现在暂停，等待阶段 7 的 Docker/CI 运行时验收；通过前不进入发布阶段。** 用户已确认：
+**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、Docker build/up、公网 ACME TLS。** 用户已确认：
 
 1. 历史实收：个人已付贡献；
 2. 账期修正：重开 + 新结算修订；
