@@ -12,6 +12,8 @@
 - tracked files：完整源码（具体数量由 `git ls-files` 为准）；
 - `.env` 未入库；`.venv`/`_runtime`/覆盖率/缓存均忽略；
 - 从 bundle 克隆验证：tag 正确、文件完整、`LICENSE`/`web` 存在、无 `.env`；
+- GitHub Actions workflow 通过 actionlint 1.7.12 静态检查；
+- 未在 GitHub runner 实际运行。
 - 未配置 GitHub remote、未 push。
 
 运行时产物（不提交仓库）：

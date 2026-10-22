@@ -120,6 +120,14 @@ X-Frame-Options: DENY
 
 ---
 
+### 1.8 CI workflow lint
+
+- `actionlint 1.7.12`：`.github/workflows/ci.yml` exit 0；
+- Workflow 包含 test 与 docker job；
+- 仅静态 lint，**未在 GitHub runner 运行**。
+
+---
+
 ## 2. 未执行 / 未验证
 
 - **Docker 镜像构建与运行**：当前 Windows 主机没有 Docker daemon，Hyper-V/Containers 均未启用；没有运行 `docker build`/`docker run`/`compose up`。

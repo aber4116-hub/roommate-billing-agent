@@ -73,6 +73,8 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - name: Workflow lint
+        run: docker run --rm -v "$PWD:/repo" -w /repo rhysd/actionlint:latest -no-color
       - name: Compose config validation
         run: |
           docker compose --env-file .env.example -f docker-compose.yml config --quiet

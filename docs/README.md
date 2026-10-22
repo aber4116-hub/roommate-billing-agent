@@ -109,6 +109,7 @@ node docs/audits/legacy-split-audit.mjs
 - Dockerfile/Compose/Caddy/CI：根目录、`.github/`
 - `docker compose config`：prod/dev 均通过（无 daemon）
 - Caddy 2.11.7 `validate`：Valid configuration；本机内部 CA TLS/反代 200、HTTP 301
+- actionlint 1.7.12：CI workflow exit 0
 - hadolint 2.15.1：exit 0
 - [备份恢复](backup-restore.md)：20 张表行数一致、`/health/ready` 200
 - [安全扫描](security-review.md)：pip-audit 无已知第三方漏洞

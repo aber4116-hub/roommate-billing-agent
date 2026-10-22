@@ -125,7 +125,7 @@ node docs/audits/legacy-split-audit.mjs
 - Dockerfile、`.dockerignore`、生产/开发 Compose、Caddyfile、`.env.example`；
 - GitHub Actions CI、Dependabot；
 - 备份/恢复 shell + PowerShell 脚本；
-- Compose config、Caddy validate、hadolint 均通过（无 daemon 静态验证）；
+- Compose config、Caddy validate、hadolint、actionlint 均通过（无 daemon 静态验证）；
 - 真实 `pg_dump` → `pg_restore` → 20 张表逐表比对 → 恢复库 `/health/ready` 200；
 - Caddy 2.11.7 内部 CA TLS 反代：`https://localhost:8443` 的 `/health/ready`、`/`、`/api/v1/meta` 均 200，HTTP 301；
 - `pip-audit` 未发现第三方依赖已知漏洞；

@@ -90,7 +90,13 @@ exit=0
 - CSP/安全头测试通过；
 - 未发现真实密码/API Key 进入版本库。
 
-### 2.6 CI 本地等价检查
+### 2.6 CI 静态检查
+
+- `actionlint 1.7.12`：`.github/workflows/ci.yml` 通过（exit 0）；
+- workflow YAML 可解析（PyYAML），包含 test/docker 两个 job；
+- **未在 GitHub runner 实际运行**。
+
+### 2.7 CI 本地等价检查
 
 - `ruff check` / `ruff format --check`；
 - `pytest`（160 passed，88%）；
