@@ -46,6 +46,21 @@ $env:PG_DATABASE_URL = "postgresql://roommate:<password>@127.0.0.1:5432/roommate
 - `roommate-YYYYMMDDTHHMMSSZ.dump`
 - `roommate-....dump.sha256`
 
+宿主机 cron 示例（03:15 UTC）：
+
+```cron
+15 3 * * * cd /srv/roommate-billing-agent && PG_DATABASE_URL="postgresql://..." BACKUP_DIR=/srv/roommate-backups ./scripts/backup_postgres.sh >>/var/log/roommate-backup.log 2>&1
+```
+
+Docker 部署下：
+
+```bash
+docker compose exec -T db pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Fc \
+  > /srv/roommate-backups/roommate-$(date -u +%Y%m%dT%H%M%SZ).dump
+```
+
+生产建议把密码放到宿主机 `.pgpass`（600）或 systemd `EnvironmentFile`，不要写进 cron 命令行。
+
 Docker 部署下，可以在宿主机用 `pg_dump` 连接容器内数据库；不建议把备份只放在 `db_data` 卷里。
 
 ---
