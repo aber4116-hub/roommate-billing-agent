@@ -12,6 +12,7 @@
 - Argon2id、服务端会话、HttpOnly Cookie、CSRF、邀请、RBAC、审计查询；
 - Agent Provider/Fake/Disabled、白名单工具、pending action、确认幂等；
 - 原生 ES modules 前端、旧版 `data-testid` 契约、严格 CSP；
+- 账户对话框：修改密码、接受邀请；
 - Dockerfile、Compose（生产/开发）、Caddyfile、CI、Dependabot；
 - `pg_dump`/`pg_restore` 备份恢复脚本与演练；
 - README、架构/数据库/API/Agent/安全/部署/测试文档；

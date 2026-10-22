@@ -9,6 +9,7 @@
 - Argon2id 登录、服务端会话、CSRF、邀请、RBAC、审计；
 - Agent Provider/工具白名单/pending action/确认幂等；
 - 原生 ES modules 前端、旧版 DOM 测试契约、严格 CSP；
+- 账户对话框：修改密码、接受邀请；
 - Dockerfile、Compose（生产/开发）、Caddyfile、GitHub Actions、Dependabot；
 - `pg_dump`/`pg_restore` 备份恢复脚本；
 - MIT License（`legacy/` 文件除外，见 NOTICE）。

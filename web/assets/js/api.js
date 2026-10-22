@@ -105,6 +105,18 @@ export const api = {
   me() {
     return request("/api/v1/auth/me");
   },
+  changePassword(currentPassword, newPassword) {
+    return request("/api/v1/auth/password", {
+      method: "POST",
+      body: { current_password: currentPassword, new_password: newPassword },
+    });
+  },
+  acceptInvite(token) {
+    return request("/api/v1/auth/invites/accept", {
+      method: "POST",
+      body: { token },
+    });
+  },
   households() {
     return request("/api/v1/households");
   },

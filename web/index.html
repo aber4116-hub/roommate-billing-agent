@@ -46,6 +46,7 @@
         <select id="household-select" data-testid="household-select" aria-label="选择账本"></select>
         <button class="btn small" id="new-household-btn" type="button">新建账本</button>
         <span class="user-chip" id="user-chip"></span>
+        <button class="btn small ghost" id="account-btn" type="button">账户</button>
         <button class="btn small ghost" id="logout-btn" type="button">退出</button>
       </div>
     </header>
@@ -368,6 +369,30 @@
       <span class="status" id="status" aria-live="polite">已就绪</span>
     </footer>
   </div>
+
+  <dialog id="account-dialog" class="panel">
+    <form id="password-form">
+      <div class="section-head"><h2>账户</h2><span class="tag">ACCOUNT</span></div>
+      <p class="muted small">修改密码会吊销其他会话；当前会话保留。</p>
+      <label class="field-label" for="current-password">当前密码</label>
+      <input id="current-password" type="password" autocomplete="current-password" required maxlength="128">
+      <label class="field-label" for="new-password">新密码（12–128 位）</label>
+      <input id="new-password" type="password" autocomplete="new-password" required minlength="12" maxlength="128">
+      <div class="form-actions">
+        <button class="btn" id="account-close" type="button">关闭</button>
+        <button class="btn primary" type="submit">修改密码</button>
+      </div>
+    </form>
+    <hr>
+    <form id="accept-invite-form">
+      <h3>接受邀请</h3>
+      <p class="muted small">粘贴管理员给你的一次性邀请码。接受后会自动刷新账本。</p>
+      <label class="field-label" for="invite-token-input">邀请码</label>
+      <input id="invite-token-input" required minlength="20" maxlength="200">
+      <div class="form-actions"><button class="btn" type="submit">接受邀请</button></div>
+    </form>
+    <p id="account-message" class="alert" hidden role="alert"></p>
+  </dialog>
 
   <dialog id="household-dialog" class="panel">
     <form id="household-form">

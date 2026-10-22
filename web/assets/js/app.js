@@ -1559,6 +1559,47 @@ async function createConversation() {
   }
 }
 
+function showAccountMessage(message = "", isError = true) {
+  const node = $("#account-message");
+  if (!node) return;
+  node.textContent = message;
+  node.hidden = !message;
+  node.className = isError ? "alert" : "callout info";
+}
+
+async function changePassword(event) {
+  event.preventDefault();
+  const current = $("#current-password").value;
+  const next = $("#new-password").value;
+  if (next.length < 12) return showAccountMessage("新密码至少 12 位");
+  try {
+    await api.changePassword(current, next);
+    $("#current-password").value = "";
+    $("#new-password").value = "";
+    showAccountMessage("密码已修改；其他会话已吊销。", false);
+    toast("密码已修改");
+  } catch (error) {
+    showAccountMessage(error.message || "修改密码失败");
+  }
+}
+
+async function acceptInvite(event) {
+  event.preventDefault();
+  const token = $("#invite-token-input").value.trim();
+  if (!token) return;
+  try {
+    await api.acceptInvite(token);
+    const me = await api.me();
+    hydrateMe(me.data);
+    $("#invite-token-input").value = "";
+    $("#account-dialog").close();
+    await selectHousehold(state.householdId, { force: true });
+    toast("已接受邀请");
+  } catch (error) {
+    showAccountMessage(error.message || "接受邀请失败");
+  }
+}
+
 /* ---------------- binding ---------------- */
 
 function bindEvents() {
@@ -1580,6 +1621,16 @@ function bindEvents() {
       setBusy(button, false);
     }
   });
+  $("#account-btn").addEventListener("click", () => {
+    $("#current-password").value = "";
+    $("#new-password").value = "";
+    $("#invite-token-input").value = "";
+    showAccountMessage("");
+    $("#account-dialog").showModal();
+  });
+  $("#account-close").addEventListener("click", () => $("#account-dialog").close());
+  $("#password-form").addEventListener("submit", changePassword);
+  $("#accept-invite-form").addEventListener("submit", acceptInvite);
   $("#logout-btn").addEventListener("click", async () => {
     try {
       await api.logout();

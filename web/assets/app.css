@@ -408,3 +408,5 @@ tbody tr:last-child td { border-bottom: 0; }
 
 dialog.panel { width: min(460px, calc(100vw - 24px)); color: var(--text); background: #111622; }
 dialog.panel::backdrop { background: #000a; backdrop-filter: blur(3px); }
+
+hr { border: 0; border-top: 1px solid var(--line); margin: 16px 0; }

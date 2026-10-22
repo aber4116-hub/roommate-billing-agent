@@ -19,7 +19,8 @@
 - `LICENSE`：MIT；
 - `NOTICE`：说明 `legacy/` 不在 MIT 范围；
 - `.gitattributes`、`.editorconfig`、`Makefile`；
-- GitHub issue/PR 模板、Dependabot、CI workflow。
+- GitHub issue/PR 模板、Dependabot、CI workflow；
+- 账户对话框：修改密码、接受邀请。
 
 ### 1.2 本地 Git
 
