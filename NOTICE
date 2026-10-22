@@ -1,0 +1,13 @@
+roommate-billing-agent
+Copyright (c) 2026 roommate-billing-agent contributors
+
+The MIT License in LICENSE applies to the original source code, documentation,
+tests and configuration in this repository created for this project.
+
+Exception: `legacy/合租账单分摊器.html` is a user-provided reference file kept
+for audit/migration comparison. It is not authored by this project and is NOT
+licensed under the MIT License. Do not redistribute it publicly without
+confirming its copyright/permission status. The legacy file may be removed
+before any public release.
+
+Third-party Python/JavaScript dependencies retain their own licenses.

@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>合租账单分摊器｜第二次变更版</title>
+<style>
+:root{color-scheme:dark;--bg:#080a11;--panel:#10131e;--panel2:#151a28;--line:#282e40;--text:#f4f6fb;--muted:#929bad;--gold:#ffb43b;--cyan:#75d8d0;--red:#ff817c;--green:#80dda8}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#1b2031 0,transparent 42%),var(--bg);color:var(--text);font:15px/1.6 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.18;background-image:linear-gradient(#34394a 1px,transparent 1px),linear-gradient(90deg,#34394a 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+main{position:relative;max-width:1200px;margin:auto;padding:38px 22px 52px}.eyebrow,.tag{color:var(--gold);font-size:11px;font-weight:850;letter-spacing:.19em}.hero{margin-bottom:24px}.hero h1{font-size:clamp(30px,5vw,48px);line-height:1.15;letter-spacing:-.04em;margin:10px 0}.hero p{color:var(--muted);margin:0;max-width:800px}.panel{background:linear-gradient(145deg,#121622f5,#0d1019f5);border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 16px 50px #0002}.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.section-head h2{font-size:18px;margin:0}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.person{border:1px solid var(--line);background:var(--panel2);border-radius:12px;padding:15px}.person h3{font-size:16px;margin:0 0 10px}.field-label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}.input-wrap{display:flex;align-items:center;gap:8px}.input-wrap input{width:100%;min-width:0;background:#090c14;border:1px solid #343b50;border-radius:8px;padding:9px;color:var(--text);font:inherit;outline:none}.input-wrap input:focus{border-color:var(--gold)}.unit{color:var(--muted);font-size:12px}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{width:100%;min-width:760px;border-collapse:collapse}th,td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}th{background:#171b29;color:var(--muted);font-size:12px}th:first-child,td:first-child{text-align:left}tbody tr:last-child td{border-bottom:0}.bill-name{font-weight:750}.hint{display:block;color:var(--muted);font-size:11px;font-weight:400}.total-row{background:#171b29;font-weight:800}.grand{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding:15px 18px;border:1px solid #69502b;border-radius:11px;background:#211b12}.grand small{display:block;color:#d0b98e;font-size:12px}.grand strong{font-size:24px;color:var(--gold)}.callout{border-left:3px solid var(--gold);padding:10px 14px;background:#ffb43b0c;color:#d9deeb;border-radius:0 8px 8px 0;margin:12px 0}.positive{color:var(--red);font-weight:800}.negative{color:var(--green);font-weight:800}.zero{color:var(--muted)}.status{color:var(--cyan);font-size:12px}.notes{color:#c4cada;padding-left:20px}.notes li{margin:6px 0}.foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:18px 2px 0}.pill{display:inline-block;border:1px solid #3b4357;border-radius:99px;padding:3px 9px;color:#d8deed;font-size:11px;margin-left:6px}
+@media(max-width:760px){main{padding:24px 12px}.panel{padding:15px}.grid3{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.hero h1{font-size:34px}}@media(max-width:390px){.grid4{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main data-testid="app">
+<header class="hero">
+ <div class="eyebrow">CHANGE REQUEST // SETTLEMENT REVISION</div>
+ <h1>合租账单分摊器 <span style="color:var(--gold)">/ 第二次变更版</span></h1>
+ <p>规则变更不覆盖历史收款：原已收金额按旧规则冻结，新应承担金额按新规则计算。所有分摊零头统一记在小周名下，账面明确可查。</p>
+</header>
+
+<section class="panel">
+ <div class="section-head"><h2>01 / 居住信息</h2><span class="tag">DAYS IN HOUSE</span></div>
+ <div class="grid3">
+  <div class="person"><h3>小林</h3><label class="field-label" for="days-lin">在住天数</label><div class="input-wrap"><input id="days-lin" type="number" min="0" step="1" value="18" data-testid="days-input" data-person="lin"><span class="unit">天</span></div></div>
+  <div class="person"><h3>阿哲</h3><label class="field-label" for="days-zhe">在住天数</label><div class="input-wrap"><input id="days-zhe" type="number" min="0" step="1" value="30" data-testid="days-input" data-person="zhe"><span class="unit">天</span></div></div>
+  <div class="person"><h3>小周</h3><label class="field-label" for="days-zhou">在住天数</label><div class="input-wrap"><input id="days-zhou" type="number" min="0" step="1" value="30" data-testid="days-input" data-person="zhou"><span class="unit">天</span></div></div>
+ </div>
+</section>
+
+<section class="panel">
+ <div class="section-head"><h2>02 / 本月账单金额</h2><span class="tag">EDITABLE INPUTS</span></div>
+ <div class="grid4">
+  <div class="person"><h3>电费</h3><label class="field-label" for="amount-electric">账单金额</label><div class="input-wrap"><input id="amount-electric" type="number" min="0" step="0.01" value="287.65" data-testid="amount-input" data-bill="electric"><span class="unit">元</span></div></div>
+  <div class="person"><h3>水费</h3><label class="field-label" for="amount-water">账单金额</label><div class="input-wrap"><input id="amount-water" type="number" min="0" step="0.01" value="96.40" data-testid="amount-input" data-bill="water"><span class="unit">元</span></div></div>
+  <div class="person"><h3>宽带费 <span class="pill">按户平摊</span></h3><label class="field-label" for="amount-internet">账单金额</label><div class="input-wrap"><input id="amount-internet" type="number" min="0" step="0.01" value="89.00" data-testid="amount-input" data-bill="internet"><span class="unit">元</span></div></div>
+  <div class="person"><h3>垃圾清运费 <span class="pill">按户平摊</span></h3><label class="field-label" for="amount-trash">账单金额</label><div class="input-wrap"><input id="amount-trash" type="number" min="0" step="0.01" value="20.00" data-testid="amount-input" data-bill="trash"><span class="unit">元</span></div></div>
+ </div>
+ <div class="callout">历史收款基线已冻结：初始已收金额按旧规则（四笔均按入住天数、零头按旧算法分散）计算并保存。修改入住天数或金额后，基线不随之变化；如需与真实收款逐笔核对，请先把冻结基线替换成实际收款记录。</div>
+</section>
+
+<section class="panel">
+ <div class="section-head"><h2>03 / 新规则应承担金额</h2><span class="tag">CURRENT LIABILITY</span></div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>账单项目</th><th>小林</th><th>阿哲</th><th>小周</th><th>账单合计</th></tr></thead>
+ <tbody>
+  <tr><td class="bill-name">电费<span class="hint">按入住天数</span></td><td><span data-testid="cell" data-bill="electric" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="electric" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="electric" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="bill-total" data-bill="electric" data-cents="0">¥0.00</span></td></tr>
+  <tr><td class="bill-name">水费<span class="hint">按入住天数</span></td><td><span data-testid="cell" data-bill="water" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="water" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="water" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="bill-total" data-bill="water" data-cents="0">¥0.00</span></td></tr>
+  <tr><td class="bill-name">宽带费<span class="hint">包年套餐，按户平摊</span></td><td><span data-testid="cell" data-bill="internet" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="internet" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="internet" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="bill-total" data-bill="internet" data-cents="0">¥0.00</span></td></tr>
+  <tr><td class="bill-name">垃圾清运费<span class="hint">按户收费，按户平摊</span></td><td><span data-testid="cell" data-bill="trash" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="trash" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="cell" data-bill="trash" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="bill-total" data-bill="trash" data-cents="0">¥0.00</span></td></tr>
+  <tr class="total-row"><td>新规则个人合计</td><td><span data-testid="person-total" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="person-total" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="person-total" data-person="zhou" data-cents="0">¥0.00</span></td><td>—</td></tr>
+ </tbody></table></div>
+ <div class="grand"><div><small>GRAND TOTAL / 总账单</small><span>新规则分摊合计与账单总额逐分一致</span></div><strong data-testid="grand-total" data-cents="0">¥0.00</strong></div>
+</section>
+
+<section class="panel">
+ <div class="section-head"><h2>04 / 历史已收与退补差额</h2><span class="tag">FROZEN RECEIPTS VS NEW LIABILITY</span></div>
+ <div class="callout">差额定义：新应承担金额 − 历史已收金额。正数表示还需补缴，负数表示应退款，零表示无需调整。<b>零头归属：小周（zhou）。</b>例如三人平摊 89.00 元时，小林 29.66 元、阿哲 29.66 元、小周 29.68 元；多出的 2 分统一记给小周，不退款，直接在账面体现。</div>
+ <div class="table-wrap"><table>
+ <thead><tr><th>人员</th><th>历史已收（锁定）</th><th>新应承担</th><th>结算差额</th><th>处理方式</th></tr></thead>
+ <tbody>
+  <tr><td class="bill-name">小林</td><td><span data-testid="paid-total" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="new-total" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="balance" data-person="lin" data-cents="0">¥0.00</span></td><td><span data-testid="balance-label" data-person="lin">无需调整</span></td></tr>
+  <tr><td class="bill-name">阿哲</td><td><span data-testid="paid-total" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="new-total" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="balance" data-person="zhe" data-cents="0">¥0.00</span></td><td><span data-testid="balance-label" data-person="zhe">无需调整</span></td></tr>
+  <tr><td class="bill-name">小周</td><td><span data-testid="paid-total" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="new-total" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="balance" data-person="zhou" data-cents="0">¥0.00</span></td><td><span data-testid="balance-label" data-person="zhou">无需调整</span></td></tr>
+ </tbody></table></div>
+ <div class="grand"><div><small>SETTLEMENT CHECK / 退补守恒</small><span>三人差额合计应为 ¥0.00（不产生额外收入或支出）</span></div><strong id="balance-check">¥0.00</strong></div>
+</section>
+
+<section class="panel">
+ <div class="section-head"><h2>05 / 取舍说明</h2><span class="tag">IMPLEMENTATION NOTES</span></div>
+ <ol class="notes" data-testid="notes">
+  <li>对分歧按账单计费属性区分：电费和水费按入住天数，包年宽带费与按户垃圾清运费按三人平摊。</li>
+  <li>新规则采用“零头归小周”：先按权重向下取整，剩余分全部加到小周名下；固定归属人避免收款时混淆。历史已收基线仍按旧的分散零头算法冻结，不追溯改写。</li>
+  <li>将历史已收基线冻结，并把新规则应承担金额独立重算，通过差额结算展示补缴或退款；分摊算法与渲染解耦，便于承接后续变更。</li>
+ </ol>
+</section>
+<footer class="foot"><span>LOCAL ONLY · 无外部资源 / 无网络请求</span><span>计算日期：<time data-testid="generated-at"></time></span><span class="status" id="status" aria-live="polite">已就绪</span></footer>
+</main>
+<script>
+(function () {
+  'use strict';
+
+  /*
+   * 第 1 步：定义纯分摊函数。
+   * totalCents：账单总金额，单位为“分”。
+   * weights：每个人的权重，例如入住天数 [18, 30, 30]，或按户平摊 [1, 1, 1]。
+   * fallbackWeights：主权重全为 0 时使用的备用权重。
+   * remainderMode：'owner' 表示新规则“零头归一人”；'spread' 表示历史旧规则“零头分散”。
+   * ownerIndex：零头归属人的数组下标；本页面固定为 2，即小周。
+   */
+  function split(totalCents, weights, fallbackWeights, remainderMode, ownerIndex) {
+    // 第 1.1 步：规范化总额；非有限数按 0 处理，金额向零截断，负数账单也可处理。
+    var total = Number.isFinite(totalCents) ? Math.trunc(totalCents) : 0;
+    var sign = total < 0 ? -1 : 1;
+    var amount = Math.abs(total);
+
+    // 第 1.2 步：输出长度严格与 weights 的长度一致；空数组按一个分摊对象处理。
+    var n = weights && Number.isInteger(weights.length) && weights.length > 0
+      ? weights.length : 1;
+
+    // 第 1.3 步：把非法、负数和非数值权重转成 0，避免污染计算。
+    function normalize(input) {
+      var values = [];
+      var sum = 0;
+      for (var i = 0; i < n; i++) {
+        var value = input && i < input.length ? input[i] : 0;
+        value = typeof value === 'number' && Number.isFinite(value) && value > 0
+          ? value : 0;
+        values.push(value);
+        sum += value;
+      }
+      return { values: values, sum: sum };
+    }
+
+    // 第 1.4 步：先使用主权重；主权重全为 0 时尝试备用权重。
+    var normalized = normalize(weights);
+    if (!(normalized.sum > 0) && fallbackWeights !== undefined) {
+      normalized = normalize(fallbackWeights);
+    }
+
+    // 第 1.5 步：主、备用权重仍全为 0 时，退化为每个人权重相同。
+    if (!(normalized.sum > 0) || !Number.isFinite(normalized.sum)) {
+      normalized.values = Array(n).fill(1);
+      normalized.sum = n;
+    }
+
+    // 第 1.6 步：按比例计算每人的精确金额，并先向下取整到整数分。
+    var result = [];
+    var remainders = [];
+    var used = 0;
+    for (var j = 0; j < n; j++) {
+      var exact = amount * (normalized.values[j] / normalized.sum);
+      if (!Number.isFinite(exact) || exact < 0) exact = 0;
+      var base = Math.floor(exact);
+      result.push(base);
+      used += base;
+      remainders.push({ index: j, fraction: exact - base });
+    }
+
+    // 第 1.7 步：计算尚未分配的零头分数。
+    var leftover = amount - used;
+
+    // 第 1.8 步：新规则把全部零头记到指定的人名下；本页面指定小周。
+    // 历史基线继续用 spread 模式，保留旧算法的分散零头结果。
+    if (remainderMode === 'owner') {
+      var safeOwner = Number.isInteger(ownerIndex) && ownerIndex >= 0 && ownerIndex < n
+        ? ownerIndex : n - 1;
+      if (leftover > 0) {
+        result[safeOwner] += leftover;
+      }
+    } else {
+      // 第 1.9 步：历史兼容模式按小数余数从大到小分散剩余分，平局按人员顺序。
+      remainders.sort(function (a, b) {
+        return b.fraction - a.fraction || a.index - b.index;
+      });
+      for (var k = 0; k < leftover; k++) {
+        result[remainders[k % n].index]++;
+      }
+    }
+
+    // 第 1.10 步：恢复原金额正负号，返回整数分数组。
+    return result.map(function (value) { return value * sign; });
+  }
+
+  // 第 2 步：将纯函数暴露到 window，满足题目要求的调用接口。
+  window.__split = split;
+
+  // 第 3 步：声明固定人员和账单类型；按户账单用等权重，水电用入住天数。
+  var people = ['lin', 'zhe', 'zhou'];
+  var bills = [
+    { id: 'electric', name: '电费', mode: 'days' },
+    { id: 'water', name: '水费', mode: 'days' },
+    { id: 'internet', name: '宽带费', mode: 'equal' },
+    { id: 'trash', name: '垃圾清运费', mode: 'equal' }
+  ];
+  var REMAINDER_OWNER_INDEX = 2; // 固定归属人：小周；数组下标从 0 开始。
+
+  // 第 4 步：读取页面输入；所有金额输入都转换成整数“分”。
+  function numberOrZero(value) {
+    var parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  function readDays() {
+    return people.map(function (person) {
+      var input = document.querySelector(
+        '[data-testid="days-input"][data-person="' + person + '"]'
+      );
+      return input ? Math.max(0, numberOrZero(input.value)) : 0;
+    });
+  }
+  function readAmountCents(billId) {
+    var input = document.querySelector(
+      '[data-testid="amount-input"][data-bill="' + billId + '"]'
+    );
+    return input ? Math.round(numberOrZero(input.value) * 100) : 0;
+  }
+
+  // 第 5 步：统一格式化人民币金额，避免用浮点元数累加。
+  function formatMoney(cents) {
+    cents = Number.isFinite(cents) ? Math.trunc(cents) : 0;
+    var sign = cents < 0 ? '-' : '';
+    cents = Math.abs(cents);
+    return sign + '¥' + Math.floor(cents / 100).toLocaleString('zh-CN') +
+      '.' + String(cents % 100).padStart(2, '0');
+  }
+
+  // 第 6 步：更新金额显示和 data-cents；传入的金额值来自整数分计算。
+  function setCents(element, cents) {
+    if (!element) return;
+    cents = Number.isFinite(cents) ? Math.trunc(cents) : 0;
+    element.setAttribute('data-cents', String(cents));
+    element.textContent = formatMoney(cents);
+  }
+  function find(selector) {
+    return document.querySelector(selector);
+  }
+
+  // 第 7 步：所有分摊都统一通过 window.__split 调用。
+  function allocate(totalCents, weights, fallbackWeights, mode) {
+    return window.__split(
+      totalCents, weights, fallbackWeights, mode || 'owner', REMAINDER_OWNER_INDEX
+    );
+  }
+
+  // 第 8 步：按新规则重算四笔账单、个人合计和总额。
+  function calculateCurrent() {
+    var dayWeights = readDays();
+    var totalsByPerson = [0, 0, 0];
+    var grandTotal = 0;
+
+    bills.forEach(function (bill) {
+      var total = readAmountCents(bill.id);
+      var weights = bill.mode === 'equal' ? [1, 1, 1] : dayWeights;
+
+      // 新账单统一采用 owner 模式：多出来的零头全部计入小周。
+      var shares = allocate(total, weights, dayWeights, 'owner');
+      var rowTotal = 0;
+
+      people.forEach(function (person, index) {
+        setCents(find(
+          '[data-testid="cell"][data-bill="' + bill.id +
+          '"][data-person="' + person + '"]'
+        ), shares[index]);
+        rowTotal += shares[index];
+        totalsByPerson[index] += shares[index];
+      });
+
+      setCents(
+        find('[data-testid="bill-total"][data-bill="' + bill.id + '"]'),
+        allocate(rowTotal, [1], undefined, 'owner')[0]
+      );
+      grandTotal += rowTotal;
+    });
+
+    // 第 8.1 步：个人合计、每人新应承担和总账单金额都用分摊函数统一写入。
+    people.forEach(function (person, index) {
+      var personalTotal = allocate(totalsByPerson[index], [1], undefined, 'owner')[0];
+      setCents(find(
+        '[data-testid="person-total"][data-person="' + person + '"]'
+      ), personalTotal);
+      setCents(find(
+        '[data-testid="new-total"][data-person="' + person + '"]'
+      ), personalTotal);
+    });
+    setCents(find('[data-testid="grand-total"]'),
+      allocate(grandTotal, [1], undefined, 'owner')[0]);
+
+    return { people: totalsByPerson, grand: grandTotal };
+  }
+
+  // 第 9 步：冻结历史已收基线。仅初始化时计算一次，之后输入变化不再修改它。
+  var frozenPaid = null;
+  function freezeHistoricalReceipts() {
+    var dayWeights = readDays();
+    frozenPaid = [0, 0, 0];
+
+    bills.forEach(function (bill) {
+      var oldTotal = readAmountCents(bill.id);
+      // 历史规则：四笔都按入住天数，且保留旧的 spread 零头分配方式。
+      var oldShares = window.__split(
+        oldTotal, dayWeights, dayWeights, 'spread', REMAINDER_OWNER_INDEX
+      );
+      oldShares.forEach(function (share, index) {
+        frozenPaid[index] += share;
+      });
+    });
+  }
+
+  // 第 10 步：计算新应承担金额与历史已收的差额，并显示补缴或退款。
+  function updateSettlement(newTotals) {
+    var netBalance = 0;
+
+    people.forEach(function (person, index) {
+      var paid = frozenPaid[index];
+      var newlyOwed = newTotals[index];
+
+      // 差额本身也经过 __split，保持金额输出路径一致。
+      var difference = window.__split(
+        newlyOwed - paid, [1], undefined, 'owner', 0
+      )[0];
+
+      setCents(find(
+        '[data-testid="paid-total"][data-person="' + person + '"]'
+      ), paid);
+      setCents(find(
+        '[data-testid="new-total"][data-person="' + person + '"]'
+      ), newlyOwed);
+      setCents(find(
+        '[data-testid="balance"][data-person="' + person + '"]'
+      ), difference);
+
+      var label = find(
+        '[data-testid="balance-label"][data-person="' + person + '"]'
+      );
+      if (label) {
+        label.className = difference > 0 ? 'positive' :
+          difference < 0 ? 'negative' : 'zero';
+        label.textContent = difference > 0
+          ? '需补缴 ' + formatMoney(difference)
+          : difference < 0
+            ? '应退款 ' + formatMoney(-difference)
+            : '无需调整';
+      }
+      netBalance += difference;
+    });
+
+    // 第 10.1 步：退补差额应相互抵消；显示合计便于房东快速核账。
+    var check = find('#balance-check');
+    if (check) {
+      check.textContent = formatMoney(netBalance);
+      check.style.color = netBalance === 0 ? 'var(--cyan)' : 'var(--red)';
+    }
+  }
+
+  // 第 11 步：统一刷新页面并显示核对状态。
+  function recalculate() {
+    var result = calculateCurrent();
+    updateSettlement(result.people);
+    var status = find('#status');
+    if (status) {
+      status.textContent = '已重算 · 历史已收已锁定 · 零头归小周 · ' +
+        (result.people.reduce(function (sum, value) { return sum + value; }, 0) === result.grand
+          ? '核对通过' : '请检查');
+    }
+  }
+
+  // 第 12 步：监听输入变化；仅重算新规则结果，不触碰冻结的历史已收。
+  document.querySelectorAll(
+    '[data-testid="days-input"],[data-testid="amount-input"]'
+  ).forEach(function (element) {
+    element.addEventListener('input', recalculate);
+  });
+
+  // 第 13 步：记录本地计算日期，不发起任何网络请求。
+  var today = new Date();
+  var dateText = today.getFullYear() + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' +
+    String(today.getDate()).padStart(2, '0');
+  find('[data-testid="generated-at"]').textContent = dateText;
+
+  // 第 14 步：先冻结历史基线，再进行首次新规则结算。
+  freezeHistoricalReceipts();
+  recalculate();
+})();
+</script>
+</body>
+</html>

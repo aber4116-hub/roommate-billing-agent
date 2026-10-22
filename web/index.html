@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>合租账单分摊器｜多用户账本</title>
+<link rel="stylesheet" href="/assets/app.css">
+</head>
+<body>
+<main data-testid="app">
+  <section id="login-view" class="login-shell">
+    <header class="hero compact">
+      <div class="eyebrow">MULTI-USER HOUSEHOLD LEDGER</div>
+      <h1>合租账单分摊器 <span class="muted">/ 多用户账本</span></h1>
+      <p>登录后进入账本。金额、分摊和结算全部由服务端整数分计算；规则变更与收款历史分开保存。</p>
+    </header>
+    <div class="panel auth-panel">
+      <div class="login-mark">¥</div>
+      <h2>登录</h2>
+      <form id="login-form" autocomplete="on">
+        <div>
+          <label class="field-label" for="login-email">邮箱</label>
+          <input id="login-email" name="email" type="email" autocomplete="username" required maxlength="320" data-testid="login-email">
+        </div>
+        <div>
+          <label class="field-label" for="login-password">密码</label>
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="128" data-testid="login-password">
+        </div>
+        <button class="btn primary" type="submit" data-testid="login-submit">登录</button>
+        <p id="login-error" class="alert" hidden role="alert"></p>
+      </form>
+      <p class="hint">账号由管理员在服务器上创建；注册默认关闭。首次使用请先执行 <span class="mono">python -m roommate_billing.cli create-user</span>。</p>
+    </div>
+  </section>
+
+  <div id="app-view" hidden>
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">HOUSEHOLD SETTLEMENT CONSOLE</div>
+        <h1>合租账单分摊器 <span class="muted">/ 账本</span></h1>
+        <p class="muted small" id="household-caption">选择一个账本开始。</p>
+      </div>
+      <div class="top-actions">
+        <label class="small muted" for="household-select">账本</label>
+        <select id="household-select" data-testid="household-select" aria-label="选择账本"></select>
+        <button class="btn small" id="new-household-btn" type="button">新建账本</button>
+        <span class="user-chip" id="user-chip"></span>
+        <button class="btn small ghost" id="logout-btn" type="button">退出</button>
+      </div>
+    </header>
+
+    <nav class="nav" id="main-nav" aria-label="账本功能">
+      <button type="button" data-view="overview" class="active" data-testid="nav-overview">总览</button>
+      <button type="button" data-view="bills" data-testid="nav-bills">账单</button>
+      <button type="button" data-view="occupancy" data-testid="nav-occupancy">入住</button>
+      <button type="button" data-view="rules" data-testid="nav-rules">规则</button>
+      <button type="button" data-view="payments" data-testid="nav-payments">实收</button>
+      <button type="button" data-view="settlement" data-testid="nav-settlement">结算</button>
+      <button type="button" data-view="members" data-testid="nav-members">成员</button>
+      <button type="button" data-view="audit" data-testid="nav-audit">审计</button>
+      <button type="button" data-view="agent" data-testid="nav-agent">Agent</button>
+    </nav>
+
+    <div id="global-error" class="alert" hidden role="alert"></div>
+    <div id="toast" class="toast" hidden role="status"></div>
+
+    <section id="view-overview" class="view" data-view-panel="overview">
+      <div id="setup-panel" class="panel" hidden>
+        <div class="section-head"><h2>账本初始化</h2><span class="tag">SETUP</span></div>
+        <p class="muted" id="setup-message">这个账本还没有完整数据。</p>
+        <div class="grid2">
+          <form id="quick-person-form" class="panel tight" hidden>
+            <h3>添加人员</h3>
+            <label class="field-label" for="quick-person-name">显示名</label>
+            <input id="quick-person-name" name="display_name" required maxlength="80">
+            <div class="form-actions"><button class="btn primary" type="submit">添加人员</button></div>
+          </form>
+          <div class="panel tight" id="period-empty" hidden>
+            <h3>创建账期</h3>
+            <p class="muted small">建议使用当前月份。账期需要先有人员。</p>
+            <form id="period-create-form" class="inline-form">
+              <label class="field-label" for="period-key">月份</label>
+              <input id="period-key" name="period_key" type="month" required>
+              <button class="btn primary" type="submit">创建账期</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid4">
+        <div class="stat"><small>账期 / PERIOD</small><strong id="stat-period">—</strong><span class="muted small" id="stat-period-status"></span></div>
+        <div class="stat"><small>账单合计 / BILLS</small><strong id="stat-bills">¥0.00</strong></div>
+        <div class="stat"><small>实收合计 / PAID</small><strong id="stat-paid">¥0.00</strong></div>
+        <div class="stat balance"><small>差额合计 / BALANCE</small><strong id="stat-balance">¥0.00</strong></div>
+      </div>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>01 / 居住信息</h2>
+          <span class="tag">DAYS IN HOUSE</span>
+        </div>
+        <div class="grid3" id="occupancy-grid"></div>
+        <div class="form-actions">
+          <button class="btn primary" id="save-occupancy-btn" type="button">保存入住天数</button>
+        </div>
+        <p class="hint">保存入住天数会重算开放账期的账单分摊；已锁定或已结算账期需先重开。</p>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>02 / 本月账单金额</h2>
+          <span class="tag">EDITABLE INPUTS</span>
+        </div>
+        <div class="grid4" id="bill-input-grid"></div>
+        <div class="callout">金额输入只用于修改账单，必须点击“保存金额”才会写入；分摊结果始终由服务端计算。零头归规则版本指定人员。</div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>03 / 新规则应承担金额</h2>
+          <span class="tag">CURRENT LIABILITY</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead id="liability-head"></thead>
+            <tbody id="liability-body"></tbody>
+          </table>
+        </div>
+        <div class="grand">
+          <div><small>GRAND TOTAL / 总账单</small><span>分摊合计与账单总额逐分一致</span></div>
+          <strong data-testid="grand-total" data-cents="0">¥0.00</strong>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head">
+          <h2>04 / 历史已收与退补差额</h2>
+          <span class="tag">RECEIPTS VS LIABILITY</span>
+        </div>
+        <div class="callout">差额 = 新应承担 − 实际已收。正数表示还需补缴，负数表示应退款。实收来自真实付款记录，不是页面自动估算。</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>人员</th><th>实际已收</th><th>新应承担</th><th>结算差额</th><th>处理方式</th></tr></thead>
+            <tbody id="balance-body"></tbody>
+          </table>
+        </div>
+        <div class="grand">
+          <div><small>SETTLEMENT CHECK / 差额合计</small><span>差额合计不必为零；它反映实收与应承担的差异。</span></div>
+          <strong id="balance-check">¥0.00</strong>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head"><h2>05 / 取舍说明</h2><span class="tag">IMPLEMENTATION NOTES</span></div>
+        <ol class="notes" data-testid="notes"></ol>
+      </section>
+
+      <section class="panel">
+        <div class="section-head"><h2>账期切换</h2><span class="tag">PERIODS</span></div>
+        <div class="inline-form">
+          <label class="field-label" for="period-select">账期</label>
+          <select id="period-select" data-testid="period-select"></select>
+          <button class="btn small" id="period-refresh-btn" type="button">刷新</button>
+          <button class="btn small" id="period-lock-btn" type="button">锁定账期</button>
+          <button class="btn small" id="period-reopen-btn" type="button">重开账期</button>
+        </div>
+        <p class="hint" id="period-hint"></p>
+      </section>
+    </section>
+
+    <section id="view-bills" class="view" data-view-panel="bills" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>账单</h2><span class="tag">BILLS</span></div>
+        <form id="bill-form" class="form-grid">
+          <div>
+            <label class="field-label" for="bill-category">分类</label>
+            <select id="bill-category" name="category" required>
+              <option value="electricity">电费</option>
+              <option value="water">水费</option>
+              <option value="internet">宽带费</option>
+              <option value="trash">垃圾清运费</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="span2">
+            <label class="field-label" for="bill-name">名称</label>
+            <input id="bill-name" name="name" required maxlength="120" placeholder="例如：10 月电费">
+          </div>
+          <div>
+            <label class="field-label" for="bill-amount">金额（元）</label>
+            <input id="bill-amount" name="amount" inputmode="decimal" required placeholder="0.00">
+          </div>
+          <div class="span4 form-actions">
+            <button class="btn primary" type="submit" data-testid="bill-create-submit">新增账单</button>
+          </div>
+        </form>
+        <div class="table-wrap mt-14">
+          <table>
+            <thead><tr><th>项目</th><th>金额</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody id="bills-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-occupancy" class="view" data-view-panel="occupancy" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>入住天数</h2><span class="tag">OCCUPANCY</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>人员</th><th>天数</th><th>账期版本</th></tr></thead>
+            <tbody id="occupancy-table"></tbody>
+          </table>
+        </div>
+        <div class="callout info">入住天数按整数 0–31 保存；修改会生成新的账期版本，并重算开放账期分摊。</div>
+      </div>
+    </section>
+
+    <section id="view-rules" class="view" data-view-panel="rules" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>当前规则</h2><span class="tag">ACTIVE RULE</span></div>
+        <div id="rule-current"></div>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>草稿与影响预览</h2><span class="tag">RULE CHANGE</span></div>
+        <form id="rule-form">
+          <div class="grid2">
+            <div>
+              <label class="field-label" for="rule-owner">零头归属人</label>
+              <select id="rule-owner" required></select>
+            </div>
+            <div>
+              <label class="field-label" for="rule-note">变更说明</label>
+              <input id="rule-note" required maxlength="500" placeholder="例如：电费改为按户均摊">
+            </div>
+          </div>
+          <div class="grid2 mt-10" id="rule-items"></div>
+          <div class="form-actions">
+            <button class="btn" id="rule-save-draft" type="button">保存草稿</button>
+            <button class="btn" id="rule-preview-btn" type="button" hidden>重新预览</button>
+            <button class="btn primary" id="rule-activate-btn" type="button" hidden>确认并激活</button>
+          </div>
+        </form>
+        <div id="rule-preview" class="callout info" hidden></div>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>版本历史</h2><span class="tag">VERSIONS</span></div>
+        <div class="table-wrap"><table><thead><tr><th>版本</th><th>状态</th><th>说明</th><th>零头归属</th></tr></thead><tbody id="rule-versions"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-payments" class="view" data-view-panel="payments" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>实际收款</h2><span class="tag">PAYMENTS</span></div>
+        <form id="payment-form" class="form-grid">
+          <div>
+            <label class="field-label" for="payment-person">付款人</label>
+            <select id="payment-person" required></select>
+          </div>
+          <div>
+            <label class="field-label" for="payment-amount">金额（元）</label>
+            <input id="payment-amount" required inputmode="decimal" placeholder="0.00">
+          </div>
+          <div>
+            <label class="field-label" for="payment-date">日期</label>
+            <input id="payment-date" type="date" required>
+          </div>
+          <div>
+            <label class="field-label" for="payment-method">方式</label>
+            <select id="payment-method">
+              <option value="wechat">微信</option>
+              <option value="alipay">支付宝</option>
+              <option value="bank">银行</option>
+              <option value="cash">现金</option>
+              <option value="other">其他</option>
+            </select>
+          </div>
+          <div class="span4 form-actions">
+            <button class="btn primary" type="submit">登记实收</button>
+          </div>
+        </form>
+        <div class="table-wrap mt-14"><table><thead><tr><th>日期</th><th>人员</th><th>金额</th><th>方式</th><th>类型</th></tr></thead><tbody id="payments-table"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-settlement" class="view" data-view-panel="settlement" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>结算预览</h2><span class="tag">SETTLEMENT PREVIEW</span></div>
+        <div id="settlement-summary" class="grid4"></div>
+        <div class="table-wrap mt-14"><table><thead><tr><th>人员</th><th>应承担</th><th>已收</th><th>差额</th></tr></thead><tbody id="settlement-lines"></tbody></table></div>
+        <div class="form-actions">
+          <button class="btn" id="settlement-preview-btn" type="button">刷新预览</button>
+          <button class="btn primary" id="settlement-create-btn" type="button">生成正式结算</button>
+          <button class="btn" id="settlement-export-btn" type="button">导出 CSV</button>
+        </div>
+        <p class="hint">正式结算前必须锁定账期。结算快照保存当时的规则、账单、实收和分摊。</p>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>结算历史</h2><span class="tag">REVISIONS</span></div>
+        <div class="table-wrap"><table><thead><tr><th>修订</th><th>状态</th><th>账单</th><th>实收</th><th>差额</th><th>操作</th></tr></thead><tbody id="settlement-table"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-members" class="view" data-view-panel="members" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>成员</h2><span class="tag">MEMBERS</span></div>
+        <div class="table-wrap"><table><thead><tr><th>成员</th><th>邮箱</th><th>角色</th><th>状态</th><th>操作</th></tr></thead><tbody id="members-table"></tbody></table></div>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>添加人员</h2><span class="tag">PERSON</span></div>
+        <form id="person-form" class="inline-form">
+          <label class="field-label" for="person-name">显示名</label>
+          <input id="person-name" required maxlength="80">
+          <label class="field-label" for="person-slug">slug</label>
+          <input id="person-slug" pattern="[a-z][a-z0-9_]{0,39}" placeholder="可选">
+          <button class="btn primary" type="submit">添加人员</button>
+        </form>
+        <p class="hint">人员与登录成员是不同概念；可先创建人员，再由管理员把成员绑定到人员。</p>
+      </div>
+      <div class="panel" id="invites-panel" hidden>
+        <div class="section-head"><h2>邀请</h2><span class="tag">INVITES</span></div>
+        <form id="invite-form" class="inline-form">
+          <label class="field-label" for="invite-email">邮箱（可选）</label>
+          <input id="invite-email" type="email" maxlength="320">
+          <label class="field-label" for="invite-role">角色</label>
+          <select id="invite-role"><option value="member">member</option><option value="admin">admin</option></select>
+          <button class="btn primary" type="submit">创建邀请</button>
+        </form>
+        <div id="invite-token" class="callout info" hidden></div>
+        <div class="table-wrap mt-12"><table><thead><tr><th>角色</th><th>邮箱</th><th>过期</th></tr></thead><tbody id="invites-table"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-audit" class="view" data-view-panel="audit" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>审计日志</h2><span class="tag">AUDIT</span></div>
+        <div class="inline-form"><button class="btn" id="audit-refresh-btn" type="button">刷新</button><span class="hint">仅 owner/admin 可见。</span></div>
+        <div class="table-wrap mt-12"><table><thead><tr><th>时间</th><th>动作</th><th>实体</th><th>操作者</th></tr></thead><tbody id="audit-table"></tbody></table></div>
+      </div>
+    </section>
+
+    <section id="view-agent" class="view" data-view-panel="agent" hidden>
+      <div class="panel">
+        <div class="section-head"><h2>Agent</h2><span class="tag">TOOL-CALLING ASSISTANT</span></div>
+        <p class="muted small">Agent 只能通过白名单工具读写；所有写操作先生成待确认动作，必须点击确认才会落账。模型不可用时其他页面仍可正常使用。</p>
+        <div class="agent-layout">
+          <aside>
+            <div class="btn-row"><button class="btn primary small" id="new-conversation-btn" type="button">新对话</button></div>
+            <div class="conversation-list" id="conversation-list"></div>
+          </aside>
+          <div class="chat-panel">
+            <div class="chat-log" id="agent-messages"></div>
+            <div id="agent-pending" class="pending-grid"></div>
+            <form id="agent-form" class="chat-form">
+              <label class="field-label" for="agent-input">消息</label>
+              <textarea id="agent-input" required maxlength="4000" placeholder="例如：帮我录入 100 元电费"></textarea>
+              <div class="form-actions"><button class="btn primary" type="submit" data-testid="agent-send">发送</button></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span>SERVER CALCULATED · 整数分 / 逐笔守恒 / 账本隔离</span>
+      <span>生成时间：<time id="generated-at" data-testid="generated-at"></time></span>
+      <span class="status" id="status" aria-live="polite">已就绪</span>
+    </footer>
+  </div>
+
+  <dialog id="household-dialog" class="panel">
+    <form id="household-form">
+      <div class="section-head"><h2>新建账本</h2><span class="tag">NEW HOUSEHOLD</span></div>
+      <label class="field-label" for="household-name">账本名称</label>
+      <input id="household-name" required maxlength="120" placeholder="例如：望京三居">
+      <div class="form-actions">
+        <button class="btn" id="household-cancel" type="button">取消</button>
+        <button class="btn primary" type="submit">创建</button>
+      </div>
+    </form>
+  </dialog>
+</main>
+<script type="module" src="/assets/js/app.js"></script>
+</body>
+</html>

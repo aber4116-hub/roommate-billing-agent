@@ -1,0 +1,195 @@
+{
+  "htmlPath": "legacy\\合租账单分摊器.html",
+  "htmlSha256": "e1cc8c58fffcbd6cbfb62defbbec6f229489c86825aa6599cf985482abc963ec",
+  "splitFunctionPresent": true,
+  "initial": {
+    "newTotals": [
+      12494,
+      18402,
+      18409
+    ],
+    "paidTotals": [
+      11378,
+      18964,
+      18963
+    ],
+    "balances": [
+      1116,
+      -562,
+      -554
+    ],
+    "grandTotal": 49305,
+    "balanceCheck": "¥0.00",
+    "status": "已重算 · 历史已收已锁定 · 零头归小周 · 核对通过",
+    "cells": {
+      "electric": [
+        6638,
+        11063,
+        11064
+      ],
+      "water": [
+        2224,
+        3707,
+        3709
+      ],
+      "internet": [
+        2966,
+        2966,
+        2968
+      ],
+      "trash": [
+        666,
+        666,
+        668
+      ]
+    }
+  },
+  "balanceCheckAfterAmountChange": "¥12.35",
+  "checks": [
+    {
+      "name": "89.00 元按户平摊，零头归小周",
+      "status": "PASS"
+    },
+    {
+      "name": "287.65 元按 18/30/30 天分摊",
+      "status": "PASS"
+    },
+    {
+      "name": "旧规则四笔基线合计",
+      "status": "PASS"
+    },
+    {
+      "name": "零金额仍返回全零且长度正确",
+      "status": "PASS"
+    },
+    {
+      "name": "权重全零且无备用权重时按人数均分",
+      "status": "PASS"
+    },
+    {
+      "name": "无效/负数权重被归零，再触发均分备用规则",
+      "status": "PASS"
+    },
+    {
+      "name": "主权重全零时使用备用权重",
+      "status": "PASS"
+    },
+    {
+      "name": "负金额保持符号且分摊守恒",
+      "status": "PASS"
+    },
+    {
+      "name": "单人分摊返回全额",
+      "status": "PASS"
+    },
+    {
+      "name": "非法零头归属下标回退到最后一人",
+      "status": "PASS"
+    },
+    {
+      "name": "固定种子随机输入 5000 组：守恒/整数/确定性",
+      "status": "PASS"
+    },
+    {
+      "name": "完整页面脚本可执行并完成初始渲染",
+      "status": "PASS"
+    },
+    {
+      "name": "初始四笔账单逐项分摊结果",
+      "status": "PASS"
+    },
+    {
+      "name": "修改电费后差额合计不为 0（界面声明与实际不一致）",
+      "status": "PASS"
+    }
+  ],
+  "observations": [
+    {
+      "id": "decimal-rounding-1.005",
+      "observed": 100,
+      "note": "输入 1.005 元时，Math.round(Number(value) * 100) 实际得到 100 分，不是常见的四舍五入 101 分；且三位小数未被拒绝。"
+    },
+    {
+      "id": "negative-amount-not-rejected",
+      "observed": {
+        "billTotalCents": -1000,
+        "status": "已重算 · 历史已收已锁定 · 零头归小周 · 核对通过",
+        "balanceCheck": "-¥297.65"
+      },
+      "note": "虽然 input 上有 min=\"0\"，但 input 事件处理器没有校验；程序化输入 -10.00 后页面仍显示负账单并提示“核对通过”。"
+    },
+    {
+      "id": "large-number-conservation",
+      "observed": {
+        "total": 7347996544991231,
+        "weights": [
+          574135598,
+          292763212
+        ],
+        "shares": [
+          4866480772375815,
+          2481515772615417
+        ],
+        "sum": 7347996544991232,
+        "delta": 1
+      },
+      "note": "在接近但未超过 Number.MAX_SAFE_INTEGER 的整数分区间，比例计算使用浮点数，分摊合计比总额多 1 分。正常账单范围内未复现，但不满足“整数分运算”的严格约束。"
+    }
+  ],
+  "defects": [
+    {
+      "id": "D01",
+      "severity": "blocker",
+      "area": "历史实收",
+      "summary": "页面没有真实历史收款录入能力，所谓“冻结基线”只是首次打开页面时按旧规则自动估算的示例。"
+    },
+    {
+      "id": "D02",
+      "severity": "blocker",
+      "area": "持久化",
+      "summary": "frozenPaid 只存在于内存；刷新、换浏览器或重新打开页面后，历史基线和所有编辑都会消失，无法承担正式账目。"
+    },
+    {
+      "id": "D03",
+      "severity": "blocker",
+      "area": "数据模型",
+      "summary": "没有账期、账本、用户、规则版本、付款流水、结算快照和审计日志；无法支持多用户、多账本或历史追溯。"
+    },
+    {
+      "id": "D04",
+      "severity": "major",
+      "area": "结算校验",
+      "summary": "“三人差额合计应为 ¥0.00”的静态声明只在历史已收总额等于新账单总额时成立；修改任一账单金额后该合计立即非零，页面只变红而不解释原因。"
+    },
+    {
+      "id": "D05",
+      "severity": "major",
+      "area": "输入校验",
+      "summary": "负数、三位小数、非整数天数、空值等没有业务校验；金额按浮点元数相乘后取整，1.005 元会被解析为 1.00 元。"
+    },
+    {
+      "id": "D06",
+      "severity": "major",
+      "area": "迁移差异",
+      "summary": "旧基线把四笔账单全部按入住天数分摊，且逐笔使用 spread 零头；新规则对宽带和垃圾清运费按户平摊、零头归小周。迁移时必须保留旧基线作为“示例/待核对”而不是真实收款。"
+    },
+    {
+      "id": "D07",
+      "severity": "major",
+      "area": "算法实现",
+      "summary": "小额账单守恒测试通过，但比例金额使用 Number 浮点运算；接近 MAX_SAFE_INTEGER 时出现 1 分误差，不符合严格的整数分算法要求。"
+    },
+    {
+      "id": "D08",
+      "severity": "major",
+      "area": "审计与权限",
+      "summary": "任何修改都无版本、无操作者、无审计；页面对所有人开放，没有登录、权限或账本隔离。"
+    }
+  ],
+  "summary": {
+    "passed": 14,
+    "failed": 0,
+    "total": 14,
+    "defects": 8
+  }
+}

@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.py text diff=python
+*.js text diff=javascript
+*.mjs text diff=javascript
+*.ts text diff=typescript
+*.md text
+*.yml text
+*.yaml text
+*.sql text
+*.sh text eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.dump binary

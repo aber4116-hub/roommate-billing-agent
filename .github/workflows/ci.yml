@@ -1,0 +1,95 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: roommate
+          POSTGRES_PASSWORD: ci-test-password
+          POSTGRES_DB: roommate_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U roommate -d roommate_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgresql+psycopg://roommate:ci-test-password@127.0.0.1:5432/roommate_test
+      TEST_DATABASE_URL: postgresql+psycopg://roommate:ci-test-password@127.0.0.1:5432/roommate_test
+      APP_SECRET_KEY: ci-only-not-a-real-secret
+      APP_BASE_URL: http://127.0.0.1:8000
+      SESSION_COOKIE_SECURE: "false"
+      LLM_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      - name: Install
+        run: uv sync --frozen --extra dev
+      - name: Ruff
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+      - name: Tests + coverage
+        run: uv run pytest --cov=roommate_billing --cov-report=term-missing --cov-fail-under=80
+      - name: Alembic drift
+        run: uv run alembic check
+      - name: Compile
+        run: uv run python -m compileall -q src tests scripts
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Frontend unit tests
+        run: node --test web/tests/format.test.mjs
+      - name: JavaScript syntax
+        run: |
+          for file in web/assets/js/*.js scripts/e2e_frontend.mjs; do
+            node --check "$file"
+          done
+
+  docker:
+    runs-on: ubuntu-24.04
+    needs: test
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose config validation
+        run: |
+          docker compose --env-file .env.example -f docker-compose.yml config --quiet
+          docker compose --env-file .env.example -f docker-compose.dev.yml config --quiet
+      - name: Hadolint
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: Dockerfile
+      - name: Caddyfile validation
+        run: |
+          docker run --rm --entrypoint caddy \
+            -v "$PWD/Caddyfile:/etc/caddy/Caddyfile:ro" \
+            -e DOMAIN=billing.example.com \
+            -e ACME_EMAIL=admin@example.com \
+            caddy:2-alpine validate --config /etc/caddy/Caddyfile --adapter caddyfile
+      - name: Build image
+        run: docker build -t roommate-billing-agent:ci .
+      - name: Image smoke
+        run: |
+          docker run --rm roommate-billing-agent:ci python -c "from pathlib import Path; import roommate_billing; assert Path('/app/web/index.html').is_file(); print('image ok')"
