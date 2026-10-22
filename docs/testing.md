@@ -125,6 +125,7 @@ node docs/audits/legacy-split-audit.mjs
 
 - 备份恢复：`pg_dump -Fc` + SHA-256 → `pg_restore` 到独立库；20 张表行数一致；`bill_cents=49305`、`payment_cents=12000`、`audit_logs=9`；恢复库 `/health/ready` 200。
 - 部署静态验证：`docker compose config` prod/dev 均 0；Caddy 2.11.7 `validate` 通过；hadolint 2.15.1 exit 0；actionlint 1.7.12 CI workflow exit 0。
+- `uv build` 成功生成 wheel/sdist；wheel 内含 `LICENSE`/`NOTICE` 与 MIT 元数据。
 - Caddy 本机内部 CA 实跑：`https://localhost:8443/health/ready` 200、`/` 200、`/api/v1/meta` 200，HTTP 8080→8443 301。
 - 安全：`pip-audit 2.10.1` 未发现第三方依赖已知漏洞；CSP/安全头测试通过。
 - 未执行：Docker build/up、Caddy TLS 实机、GitHub Actions（本机无 Docker daemon）。
