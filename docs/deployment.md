@@ -3,7 +3,7 @@
 - 目标环境：一台 Linux 主机（2 vCPU / 2 GB 内存起步，家用规模足够），Docker Engine + Docker Compose v2。
 - 拓扑：Caddy（HTTPS）→ FastAPI 单体 → PostgreSQL。
 - 当前状态：**Dockerfile、Compose、Caddyfile、CI、备份恢复脚本已创建；Compose/Caddy/Dockerfile 静态验证通过**。
-- 当前工作环境没有 Docker daemon（Hyper-V/Containers 未启用），因此 **未执行 docker build / compose up**；Caddy 已用内部 CA 在 `https://localhost:8443` 做真实 TLS/反代测试，公网 ACME 未验证。不得声称已部署。
+- 当前 Windows 主机没有 Docker daemon；已用 QEMU TCG + boot2docker 19.03 执行 **docker build/run**（镜像 215MB、容器 healthy、UI 登录通过），但 **compose up 和 Docker 内 Caddy 未执行**。Caddy 已用内部 CA 在 `https://localhost:8443` 做真实 TLS/反代测试，公网 ACME 未验证。不得声称已生产部署。
 - 备份恢复已在本地 PostgreSQL 16.15 真实演练，见 [backup-restore.md](backup-restore.md)。
 
 ---

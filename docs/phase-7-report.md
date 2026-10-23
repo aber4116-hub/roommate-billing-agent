@@ -1,7 +1,7 @@
 # 阶段 7 报告：Docker/CI/备份恢复/安全检查
 
-- 状态：**交付物已完成，备份恢复与静态验证已实际通过；Docker 运行时和 GitHub Actions 未执行**。
-- 当前主机没有 Docker daemon；Hyper-V/Containers 未启用，WSL 无发行版。未通过重启/改系统特性来强行改变环境。
+- 状态：**交付物已完成；Docker build/run 已在 QEMU/boot2docker 实际通过；Compose、Docker 内 Caddy、GitHub Actions 未执行**。
+- 当前主机没有 Docker daemon；Hyper-V/Containers 未启用，WSL 无发行版。改用 QEMU TCG + boot2docker 完成 Docker build/run（非生产验证）。
 - Caddy 已在本机用内部 CA 完成真实 TLS 握手/反代测试（`https://localhost:8443` → `127.0.0.1:8001`），公网 ACME/域名未验证。
 - 因此本阶段**不能**标记为“全新环境部署已通过”。下面区分“已验证”和“未验证”。
 
@@ -106,17 +106,38 @@ exit=0
 - JavaScript syntax；
 - Compose config、Caddy validate、hadolint。
 
+### 2.8 Docker build/run（QEMU）
+
+由于本机不能启用 Hyper-V/WSL，使用 QEMU 11.1.0 TCG + boot2docker 19.03.12 做实际验证：
+
+```text
+Docker 19.03.12 / API 1.40
+镜像：roommate-billing-agent:qemu  ce80e9322d42  215MB
+容器：rba-db (postgres:16-alpine) + rba-api (healthy)
+/health/ready -> 200 {"status":"ok"}
+登录后：12 cells / ¥493.05 / 无 JS 异常
+```
+
+发现并修复：
+
+- 运行时缺少 `httpx`（Agent provider 导入失败）→ 加入 `pyproject` 运行时依赖；
+- 旧 Docker 19 的 seccomp 阻止 Python 3.12 `clone3`，导致 Argon2 `Threading failure`；QEMU 验证使用 `--security-opt seccomp=unconfined`，现代 Docker 仍需复测；
+- pip 在旧环境起线程失败 → `PIP_PROGRESS_BAR=off`；
+- 健康检查 5s 在 TCG 下超时 → 调整为 15s/timeout、60s start-period，容器转 healthy。
+
+限制：Compose/Caddy 未在 Docker 内启动，镜像扫描/DAST 未做；QEMU 仅作验证，不是生产宿主。详见 [Docker 运行时验证](docker-runtime.md)。
+
 ---
 
 ## 3. 未验证 / 阻塞项
 
 | 项 | 原因 | 状态 |
 |---|---|---|
-| `docker build` | 主机没有 Docker daemon | **未执行** |
-| `docker compose up` | 同上 | **未执行** |
+| `docker build` | 主机无 daemon，改用 QEMU TCG | **已执行**（镜像 215MB） |
+| `docker compose up` | 未在 Docker 内跑 Compose | **未执行** |
 | Caddy 公网 ACME TLS | 无公网域名/DNS | **未执行**（本地内部 CA TLS 已通过） |
 | GitHub Actions 运行 | 无远程仓库/未 push | **未执行** |
-| 镜像漏洞扫描（Trivy/Grype） | 无镜像 | **未执行** |
+| 镜像漏洞扫描（Trivy/Grype） | 镜像已构建，未安装扫描器 | **未执行** |
 | DAST/渗透 | 未安排 | **未执行** |
 | 对象存储/异地备份 | 未接入 | **未执行** |
 | 备份加密 | 未实现 | **未执行** |

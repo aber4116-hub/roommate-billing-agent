@@ -24,13 +24,14 @@ Chrome E2E passed
 Caddy internal CA TLS/proxy passed
 backup/restore: 20 tables identical
 recovery /health/ready: 200
+Docker build/run passed in QEMU/boot2docker (healthy)
 hadolint / caddy validate / compose config passed
 pip-audit: no known third-party vulnerabilities
 ```
 
 ## 未验证
 
-- Docker build / compose up（本机无 Docker daemon）；
+- Compose/Caddy 容器编排（Docker image build/run 已在 QEMU 验证）；
 - 公网 ACME TLS；
 - GitHub Actions 首次运行（无远程仓库）；
 - 镜像漏洞扫描/DAST；

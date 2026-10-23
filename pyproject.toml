@@ -13,6 +13,7 @@ license = "MIT"
 license-files = ["LICENSE", "NOTICE"]
 dependencies = [
   "fastapi>=0.116,<1",
+  "httpx>=0.28,<1",
   "uvicorn[standard]>=0.35,<1",
   "sqlalchemy>=2.0.40,<2.1",
   "alembic>=1.16,<2",
@@ -27,7 +28,6 @@ dev = [
   "pytest>=9.0,<10",
   "pytest-cov>=6,<8",
   "hypothesis>=6.150,<7",
-  "httpx>=0.28,<1",
   "ruff>=0.17,<1",
 ]
 

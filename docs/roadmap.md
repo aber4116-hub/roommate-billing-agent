@@ -1,6 +1,6 @@
 # 阶段 2–8：开发路线图与验收标准
 
-- 当前进度：阶段 0–6 完成；阶段 7 交付物/备份/本地 Caddy TLS/静态验证完成，Docker/CI 运行时未执行；阶段 8 本地 rc.1 完成，未 push。
+- 当前进度：阶段 0–6 完成；阶段 7 备份/Caddy TLS/静态验证/Docker build/run（QEMU）完成，Compose/Caddy 容器编排/CI 未执行；阶段 8 本地 rc.1 完成，未 push。
 - 规则：每次只推进一个阶段；上一阶段验收通过并经用户确认后，才进入下一阶段。
 - 金额、历史、权限、审计的正确性优先于功能数量。
 - 所有“已通过”必须有可复现命令与真实输出。
@@ -18,7 +18,7 @@
 | 4 | 登录/成员/权限/审计 | 会话、CSRF、邀请、RBAC、审计、隔离测试 | ✅ 140 tests passed；coverage 89%；报告见 `docs/phase-4-report.md` |
 | 5 | Agent/模型适配/确认 | provider、工具网关、pending actions、FakeProvider 测试 | ✅ 157 tests passed；coverage 88%；报告见 `docs/phase-5-report.md` |
 | 6 | 前端改造 | 登录、账期、账单、规则、结算、聊天、确认、导出 | ✅ 160 tests passed；coverage 88%；Chrome E2E 通过；报告见 `docs/phase-6-report.md` |
-| 7 | 测试/部署/CI/恢复 | Docker、Compose、Caddy、CI、备份恢复、安全检查 | ⚠️ 交付物/备份恢复/静态验证完成；Docker/CI 运行时未执行 |
+| 7 | 测试/部署/CI/恢复 | Docker、Compose、Caddy、CI、备份恢复、安全检查 | ⚠️ Docker build/run/备份/Caddy TLS 完成；Compose/CI 未执行 |
 | 8 | README/许可证/发布 | README、LICENSE、CONTRIBUTING、SECURITY、Release | ⚠️ MIT/本地 rc.1/bundle 完成；未 push/GitHub Release |
 
 ---
@@ -454,7 +454,7 @@ scripts/seed_demo.py
 
 ### 6.4 下一阶段条件
 
-备份恢复已有真实输出；Docker build/up、Caddy TLS、GitHub Actions 仍需有 Docker/GitHub 的环境执行。
+备份恢复、Caddy 本地 TLS、Docker build/run（QEMU）已有真实输出；Compose/Caddy 编排、GitHub Actions 仍未执行。
 
 ---
 
@@ -578,7 +578,7 @@ scripts/seed_demo.py
 - MIT、社区文档、本地 Git `v0.1.0-rc.1`、bundle/zip；
 - GitHub 远程/Release 待推送。
 
-**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、Docker build/up、公网 ACME TLS。** 用户已确认：
+**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、Compose/Caddy 容器编排、公网 ACME TLS。** 用户已确认：
 
 1. 历史实收：个人已付贡献；
 2. 账期修正：重开 + 新结算修订；
@@ -591,4 +591,4 @@ scripts/seed_demo.py
 
 - 仓库 Public/Private 与 GitHub 远程地址（当前无远程）；
 - 真实模型 API Key 与 Provider（阶段 5 只用 Fake/HTTP mock）；
-- Docker/CI 运行时环境。
+- Compose/Caddy 容器编排环境与 GitHub 远程。

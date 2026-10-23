@@ -3,7 +3,7 @@
 - 状态：**本地 release candidate 已完成；尚未创建 GitHub 远程仓库、未 push**。
 - 版本：`v0.1.0-rc.1`。
 - 许可证：MIT（`legacy/` 用户提供文件除外，见 `NOTICE`）。
-- Docker/CI 运行时仍未验证；本版本不是生产就绪版。
+- Docker build/run 已在 QEMU/boot2docker 实际通过；Compose/Caddy 容器编排、GitHub Actions 仍未验证；本版本不是生产就绪版。
 
 ---
 
@@ -70,7 +70,7 @@ _runtime/SHA256SUMS
 | GitHub 远程仓库 | 本机没有 `gh`、`GITHUB_TOKEN`、远程 URL |
 | `git push` / PR / Release | 同上 |
 | GitHub Actions 首次运行 | 无远程仓库 |
-| Docker build/up | 本机无 Docker daemon，Hyper-V/Containers 未启用 |
+| Docker build/run | 已用 QEMU TCG + boot2docker 完成；Compose/Caddy 未跑 |
 | 公网 ACME TLS | 无域名/DNS/公网入口 |
 | 公开仓库 | 默认 Private；`legacy/` 权利未确认，公开前需移除或取得许可 |
 

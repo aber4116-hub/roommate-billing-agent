@@ -438,7 +438,7 @@ permissions:
 
 ## 11. 当前阶段与下一步
 
-- 当前：阶段 0–6 完成；阶段 7 的 Docker/Compose/Caddy/CI/备份恢复交付物已创建，备份恢复/静态验证完成，Docker/CI 运行时未执行；尚未 `git init`，未创建远程仓库，未选择许可证。
+- 当前：阶段 0–6 完成；阶段 7 的 Docker build/run（QEMU）/备份恢复/Caddy 本地 TLS 已完成，Compose/Caddy 编排与 CI 未执行；MIT、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建，未 push。
 - 阶段 3 起继续实现数据库/API，阶段 8 才执行：
   - 创建 LICENSE；
   - 完成 README；

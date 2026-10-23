@@ -6,11 +6,11 @@
 - 阶段 4 状态：登录/会话/CSRF/邀请/角色/审计已完成，140 个测试通过，覆盖率 89%。
 - 阶段 5 状态：Agent/Provider/工具/确认已完成，157 个测试通过，覆盖率 88%。
 - 阶段 6 状态：前端/旧 DOM 契约/CSP/Chrome E2E 已完成，160 个测试通过，覆盖率 88%。
-- 阶段 7 状态：Docker/Compose/Caddy/CI/备份恢复交付物已创建；备份恢复、本地 Caddy 内部 CA TLS、安全扫描已执行；Docker 运行时/CI 未执行。
+- 阶段 7 状态：备份恢复、本地 Caddy TLS、Docker build/run（QEMU）、静态验证已执行；Compose/Caddy 容器编排、CI 未执行。
 - 阶段 8 状态：MIT、README/CONTRIBUTING/SECURITY/CHANGELOG、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建；未配置 GitHub 远程。
 - 项目根目录：`roommate-billing-agent/`
 - 旧版文件：原路径未修改；只读副本 `legacy/合租账单分摊器.html`。
-- 当前有 Docker/CI/备份恢复配置；Docker 运行时尚未验证。
+- Docker 镜像已在 QEMU/boot2docker 实际 build/run；生产宿主与 Compose 编排未验证。
 
 ## 阅读顺序
 
@@ -21,18 +21,19 @@
 5. [阶段 5 实现报告](phase-5-report.md)
 6. [阶段 6 实现报告](phase-6-report.md)
 7. [阶段 7 实现报告](phase-7-report.md)
-8. [阶段 8 实现报告](phase-8-report.md)
-9. [备份与恢复演练](backup-restore.md)
-10. [安全扫描记录](security-review.md)
-11. [架构与选型](architecture.md)
-12. [数据库设计](database.md)
-13. [REST API](api.md)
-14. [Agent 设计](agent.md)
-15. [安全设计](security.md)
-16. [测试方案](testing.md)
-17. [部署方案](deployment.md)
-18. [GitHub 发布](github-release.md)
-19. [开发路线图](roadmap.md)
+8. [Docker 运行时验证](docker-runtime.md)
+9. [阶段 8 实现报告](phase-8-report.md)
+10. [备份与恢复演练](backup-restore.md)
+11. [安全扫描记录](security-review.md)
+12. [架构与选型](architecture.md)
+13. [数据库设计](database.md)
+14. [REST API](api.md)
+15. [Agent 设计](agent.md)
+16. [安全设计](security.md)
+17. [测试方案](testing.md)
+18. [部署方案](deployment.md)
+19. [GitHub 发布](github-release.md)
+20. [开发路线图](roadmap.md)
 
 ## 阶段 0 证据
 
@@ -113,7 +114,8 @@ node docs/audits/legacy-split-audit.mjs
 - hadolint 2.15.1：exit 0
 - [备份恢复](backup-restore.md)：20 张表行数一致、`/health/ready` 200
 - [安全扫描](security-review.md)：pip-audit 无已知第三方漏洞
-- **未执行**：Docker build/up、公网 ACME TLS、GitHub Actions（本地内部 CA TLS 已通过）
+- **已执行**：Docker build/run（QEMU）、本地 Caddy TLS、备份恢复
+- **未执行**：Compose/Caddy 容器编排、公网 ACME TLS、GitHub Actions
 
 ## 阶段 8 证据
 
@@ -137,4 +139,4 @@ node docs/audits/legacy-split-audit.mjs
 
 ## 未验证声明
 
-当前验证了旧页面审计、阶段 2 领域层测试、阶段 3 PostgreSQL/服务/API 集成测试、阶段 4 真实 Cookie/CSRF 认证测试、阶段 5 FakeProvider/HTTP mock Agent 测试、阶段 6 静态契约/CSP/Chrome E2E、阶段 7 备份恢复/静态部署验证。真实模型生产调用、Docker build/up、公网 ACME TLS、GitHub Actions、GitHub push 尚未执行；相关文档已明确标注。
+当前验证了旧页面审计、阶段 2 领域层测试、阶段 3 PostgreSQL/服务/API 集成测试、阶段 4 真实 Cookie/CSRF 认证测试、阶段 5 FakeProvider/HTTP mock Agent 测试、阶段 6 静态契约/CSP/Chrome E2E、阶段 7 备份恢复/静态部署验证。真实模型生产调用、Compose/Caddy 容器编排、公网 ACME TLS、GitHub Actions、GitHub push 尚未执行；相关文档已明确标注。

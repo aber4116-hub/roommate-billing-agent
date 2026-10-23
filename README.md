@@ -2,9 +2,9 @@
 
 合租账单分摊与结算 Agent。
 
-> Release candidate：`v0.1.0-rc.1`。本地验证通过；Docker/CI 运行时尚未验证；尚未 push 到 GitHub。
+> Release candidate：`v0.1.0-rc.1`。Docker build/run 已在 QEMU 验证；Compose/Caddy/CI 与 GitHub push 尚未验证。
 
-> 当前状态：阶段 0–6 已完成；阶段 7 的 Docker/Compose/Caddy/CI/备份恢复交付物已创建，备份恢复与本地 Caddy 内部 CA TLS 已真实演练，**Docker 运行时和 GitHub Actions 尚未执行**。不可按生产系统部署。
+> 当前状态：阶段 0–6 已完成；阶段 7 的备份恢复、Caddy 本地 TLS、Docker image build/run（QEMU）已实际通过；**Compose/Caddy 容器编排与 GitHub Actions 尚未执行**。不可按生产系统部署。
 >
 > 原文件 `合租账单分摊器.html` 未被修改；只读副本在 `legacy/`。
 
@@ -30,7 +30,8 @@
 | [阶段 4 实现报告](docs/phase-4-report.md) | 登录、会话、CSRF、邀请、角色、审计、140 个测试 |
 | [阶段 5 实现报告](docs/phase-5-report.md) | Agent、Provider、工具白名单、待确认动作、157 个测试 |
 | [阶段 6 实现报告](docs/phase-6-report.md) | 前端、旧 DOM 契约、CSP、Chrome E2E、160 个测试 |
-| [阶段 7 实现报告](docs/phase-7-report.md) | Docker/Compose/Caddy/CI、备份恢复、安全扫描；运行时未验证 |
+| [阶段 7 实现报告](docs/phase-7-report.md) | Docker/Compose/Caddy/CI、备份恢复、安全扫描；Docker build/run 已验证 |
+| [Docker 运行时验证](docs/docker-runtime.md) | QEMU/boot2docker 实际 build/run、health、UI |
 | [备份与恢复演练](docs/backup-restore.md) | pg_dump/pg_restore、逐表比对、恢复库健康检查 |
 | [安全扫描记录](docs/security-review.md) | pip-audit、hadolint、Caddy/Compose 验证、未验证项 |
 | [阶段 8 实现报告](docs/phase-8-report.md) | MIT、社区文档、本地 Git/bundle/zip、未推送 |
@@ -129,7 +130,7 @@ node docs/audits/legacy-split-audit.mjs
 - 真实 `pg_dump` → `pg_restore` → 20 张表逐表比对 → 恢复库 `/health/ready` 200；
 - Caddy 2.11.7 内部 CA TLS 反代：`https://localhost:8443` 的 `/health/ready`、`/`、`/api/v1/meta` 均 200，HTTP 301；
 - `pip-audit` 未发现第三方依赖已知漏洞；
-- **Docker build/up、公网 ACME TLS、GitHub Actions 实际运行未执行**：本机无 Docker daemon，Hyper-V/Containers 未启用。
+- **Docker build/run 已在 QEMU TCG + boot2docker 19.03 实际通过**；Compose/Caddy 容器编排、公网 ACME、GitHub Actions 未执行。
 
 详细结果见 [阶段 7 报告](docs/phase-7-report.md)、[备份恢复](docs/backup-restore.md)、[安全扫描](docs/security-review.md)。
 
@@ -163,7 +164,7 @@ $env:DEMO_PASSWORD="至少十二位密码"
 
 打开 `http://127.0.0.1:8000/`。`.env` 中 `APP_BASE_URL` 必须与浏览器地址一致；本地默认关闭 `SESSION_COOKIE_SECURE`，生产必须开启。
 
-## Docker 部署（交付物已创建，运行时未验证）
+## Docker 部署（build/run 已在 QEMU 验证；Compose 未跑）
 
 ```bash
 cp .env.example .env
@@ -175,7 +176,7 @@ curl -fsS https://<DOMAIN>/health/ready
 ```
 
 - 只发布 Caddy 80/443，Postgres/API 不映射公网；
-- 本机无 Docker daemon，`docker build/up` 未执行；
+- 本机无 Docker daemon；已用 QEMU 完成 `docker build/run`，Compose/Caddy 容器编排未跑；
 - 备份/恢复脚本与实测见 [backup-restore.md](docs/backup-restore.md)。
 
 ## 已确认的决策
