@@ -3,7 +3,7 @@
 - 状态：**本地 release candidate 已完成；尚未创建 GitHub 远程仓库、未 push**。
 - 版本：`v0.1.0-rc.1`。
 - 许可证：MIT（`legacy/` 用户提供文件除外，见 `NOTICE`）。
-- Docker build/run 已在 QEMU/boot2docker 实际通过；Compose 编排、GitHub Actions 仍未验证；Docker 内 Caddy HTTPS 已通过；本版本不是生产就绪版。
+- Docker build/run 已在 QEMU/boot2docker 实际通过；GitHub Actions 仍未验证；Docker 内 Caddy HTTPS 与 Compose dev up 已通过；本版本不是生产就绪版。
 
 ---
 

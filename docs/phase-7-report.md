@@ -1,6 +1,6 @@
 # 阶段 7 报告：Docker/CI/备份恢复/安全检查
 
-- 状态：**交付物已完成；Docker build/run 已在 QEMU/boot2docker 实际通过；Compose、GitHub Actions 未执行；Docker 内 Caddy HTTPS 已通过**。
+- 状态：**交付物已完成；Docker build/run 已在 QEMU/boot2docker 实际通过；Compose dev up、Docker 内 Caddy HTTPS 已通过；GitHub Actions 未执行**。
 - 当前主机没有 Docker daemon；Hyper-V/Containers 未启用，WSL 无发行版。改用 QEMU TCG + boot2docker 完成 Docker build/run（非生产验证）。
 - Caddy 已在本机用内部 CA 完成真实 TLS 握手/反代测试（`https://localhost:8443` → `127.0.0.1:8001`），公网 ACME/域名未验证。
 - 因此本阶段**不能**标记为“全新环境部署已通过”。下面区分“已验证”和“未验证”。
@@ -125,7 +125,7 @@ Docker 19.03.12 / API 1.40
 - pip 在旧环境起线程失败 → `PIP_PROGRESS_BAR=off`；
 - 健康检查 5s 在 TCG 下超时 → 调整为 15s/timeout、60s start-period，容器转 healthy。
 
-Docker 内 Caddy HTTPS 已通过（internal CA）。限制：Compose 未启动，镜像扫描/DAST 未做；QEMU 仅作验证，不是生产宿主。详见 [Docker 运行时验证](docker-runtime.md)。
+Docker 内 Caddy HTTPS、Compose dev up 已通过。限制：Compose 用了 QEMU seccomp/端口 override；镜像扫描/DAST 未做；QEMU 仅作验证，不是生产宿主。详见 [Docker 运行时验证](docker-runtime.md)。
 
 ---
 
@@ -134,7 +134,7 @@ Docker 内 Caddy HTTPS 已通过（internal CA）。限制：Compose 未启动�
 | 项 | 原因 | 状态 |
 |---|---|---|
 | `docker build` | 主机无 daemon，改用 QEMU TCG | **已执行**（镜像 215MB） |
-| `docker compose up` | 未在 Docker 内跑 Compose | **未执行** |
+| `docker compose up` | Compose v5.6.1 dev + QEMU override | **已执行**（db/api healthy） |
 | Caddy 容器 HTTPS | 已用 caddy:2-alpine + internal CA | **已执行** |
 | Caddy 公网 ACME TLS | 无公网域名/DNS | **未执行** |
 | GitHub Actions 运行 | 无远程仓库/未 push | **未执行** |

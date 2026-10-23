@@ -31,7 +31,7 @@ pip-audit: no known third-party vulnerabilities
 
 ## 未验证
 
-- Compose 编排（Docker image build/run + Caddy HTTPS 已在 QEMU 验证）；
+- 生产 Compose 的 Caddy/ACME（dev Compose up 已在 QEMU 验证）；
 - 公网 ACME TLS；
 - GitHub Actions 首次运行（无远程仓库）；
 - 镜像漏洞扫描/DAST；

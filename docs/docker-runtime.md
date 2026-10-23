@@ -41,6 +41,33 @@ GET /health/ready -> 200 {"status":"ok"}
 
 说明：Caddy 使用本地 internal CA，浏览器首次访问会有证书提示；这不是公网 ACME。
 
+### Docker Compose 实际 up
+
+在 VM 内安装 Docker Compose v5.6.1，执行：
+
+```bash
+/home/docker/docker-compose -p rba-compose \\
+  -f docker-compose.dev.yml -f compose.override.yml up -d --no-build
+```
+
+结果：
+
+```text
+up_exit=0
+rba-compose-db-1   postgres:16.15-bookworm   Up (healthy)
+rba-compose-api-1  rba-compose-api           Up (healthy)
+GET http://127.0.0.1:18080/health/ready -> 200
+```
+
+UI 登录：12 cells / ¥493.05 / 无 JS 异常；截图 `_runtime/compose-dashboard.png`。
+
+`compose.override.yml` 仅用于旧 QEMU 环境：
+
+- `seccomp=unconfined`（旧 Docker 19 + Python 3.12/Postgres initdb）；
+- `APP_BASE_URL=http://127.0.0.1:18080`（SSH 隧道端口）。
+
+生产 Compose 配置本身未改；现代 Docker 上应重新验证默认 seccomp。
+
 ---
 
 ## 2. 实际命令

@@ -1,6 +1,6 @@
 # 阶段 2–8：开发路线图与验收标准
 
-- 当前进度：阶段 0–6 完成；阶段 7 备份/Caddy TLS/静态验证/Docker build/run（QEMU）完成，Compose/CI 未执行；Caddy HTTPS 已通过；阶段 8 本地 rc.1 完成，未 push。
+- 当前进度：阶段 0–6 完成；阶段 7 备份/Caddy TLS/静态验证/Docker build/run（QEMU）完成，Compose dev up、Caddy HTTPS 已通过；CI 未执行；阶段 8 本地 rc.1 完成，未 push。
 - 规则：每次只推进一个阶段；上一阶段验收通过并经用户确认后，才进入下一阶段。
 - 金额、历史、权限、审计的正确性优先于功能数量。
 - 所有“已通过”必须有可复现命令与真实输出。
@@ -454,7 +454,7 @@ scripts/seed_demo.py
 
 ### 6.4 下一阶段条件
 
-备份恢复、Caddy 本地 TLS、Docker build/run（QEMU）已有真实输出；Compose 编排、GitHub Actions 仍未执行；Caddy HTTPS 已通过。
+备份恢复、Caddy 本地 TLS、Docker build/run（QEMU）已有真实输出；GitHub Actions 仍未执行；Compose dev up、Caddy HTTPS 已通过。
 
 ---
 
@@ -578,7 +578,7 @@ scripts/seed_demo.py
 - MIT、社区文档、本地 Git `v0.1.0-rc.1`、bundle/zip；
 - GitHub 远程/Release 待推送。
 
-**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、Compose 编排、公网 ACME TLS。** 用户已确认：
+**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、公网 ACME TLS。** 用户已确认：
 
 1. 历史实收：个人已付贡献；
 2. 账期修正：重开 + 新结算修订；

@@ -140,7 +140,7 @@ X-Frame-Options: DENY
 - **备份异地/对象存储/加密**：未接入。
 - **CI 的 Docker job**：workflow 中已定义，但未在 GitHub 上验证。
 - **Docker 内 Caddy HTTPS**：已启动 `caddy:2-alpine`，internal CA、HSTS/CSP、HTTPS 登录通过；公网 ACME 未验证。
-- **Compose 编排**：只做 config，未实际 up。
+- **Compose 编排**：Compose v5.6.1 dev up 通过（db/api healthy）；QEMU 旧 Docker 需 seccomp/端口 override。
 
 ---
 
