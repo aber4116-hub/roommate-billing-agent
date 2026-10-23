@@ -30,7 +30,7 @@ _runtime/SHA256SUMS
 
 1. 决定 Private/Public；
 2. 公开前处理 `legacy/合租账单分摊器.html`（MIT 不覆盖，见 `NOTICE`）；
-3. 决定是否等在 Docker/CI 运行时验收后再发布。
+3. 决定是否等在 Compose/CI 运行时验收后再发布。
 
 ---
 
@@ -438,7 +438,7 @@ permissions:
 
 ## 11. 当前阶段与下一步
 
-- 当前：阶段 0–6 完成；阶段 7 的 Docker build/run（QEMU）/备份恢复/Caddy 本地 TLS 已完成，Compose/Caddy 编排与 CI 未执行；MIT、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建，未 push。
+- 当前：阶段 0–6 完成；阶段 7 的 Docker build/run（QEMU）/备份恢复/Caddy 本地 TLS 已完成，Compose 编排与 CI 未执行；Docker 内 Caddy HTTPS 已通过；MIT、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建，未 push。
 - 阶段 3 起继续实现数据库/API，阶段 8 才执行：
   - 创建 LICENSE；
   - 完成 README；

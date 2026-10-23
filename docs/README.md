@@ -6,7 +6,7 @@
 - 阶段 4 状态：登录/会话/CSRF/邀请/角色/审计已完成，140 个测试通过，覆盖率 89%。
 - 阶段 5 状态：Agent/Provider/工具/确认已完成，157 个测试通过，覆盖率 88%。
 - 阶段 6 状态：前端/旧 DOM 契约/CSP/Chrome E2E 已完成，160 个测试通过，覆盖率 88%。
-- 阶段 7 状态：备份恢复、本地 Caddy TLS、Docker build/run（QEMU）、静态验证已执行；Compose/Caddy 容器编排、CI 未执行。
+- 阶段 7 状态：备份恢复、本地 Caddy TLS、Docker build/run（QEMU）、静态验证已执行；Compose 编排、CI 未执行；Docker 内 Caddy HTTPS 已通过。
 - 阶段 8 状态：MIT、README/CONTRIBUTING/SECURITY/CHANGELOG、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建；未配置 GitHub 远程。
 - 项目根目录：`roommate-billing-agent/`
 - 旧版文件：原路径未修改；只读副本 `legacy/合租账单分摊器.html`。
@@ -115,7 +115,8 @@ node docs/audits/legacy-split-audit.mjs
 - [备份恢复](backup-restore.md)：20 张表行数一致、`/health/ready` 200
 - [安全扫描](security-review.md)：pip-audit 无已知第三方漏洞
 - **已执行**：Docker build/run（QEMU）、本地 Caddy TLS、备份恢复
-- **未执行**：Compose/Caddy 容器编排、公网 ACME TLS、GitHub Actions
+- **已执行**：Docker 内 Caddy HTTPS（internal CA）
+- **未执行**：Compose 编排、公网 ACME TLS、GitHub Actions
 
 ## 阶段 8 证据
 
@@ -139,4 +140,4 @@ node docs/audits/legacy-split-audit.mjs
 
 ## 未验证声明
 
-当前验证了旧页面审计、阶段 2 领域层测试、阶段 3 PostgreSQL/服务/API 集成测试、阶段 4 真实 Cookie/CSRF 认证测试、阶段 5 FakeProvider/HTTP mock Agent 测试、阶段 6 静态契约/CSP/Chrome E2E、阶段 7 备份恢复/静态部署验证。真实模型生产调用、Compose/Caddy 容器编排、公网 ACME TLS、GitHub Actions、GitHub push 尚未执行；相关文档已明确标注。
+当前验证了旧页面审计、阶段 2 领域层测试、阶段 3 PostgreSQL/服务/API 集成测试、阶段 4 真实 Cookie/CSRF 认证测试、阶段 5 FakeProvider/HTTP mock Agent 测试、阶段 6 静态契约/CSP/Chrome E2E、阶段 7 备份恢复/静态部署验证。真实模型生产调用、Compose 编排、公网 ACME TLS、GitHub Actions、GitHub push 尚未执行；相关文档已明确标注。

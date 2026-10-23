@@ -1,6 +1,6 @@
 # 测试方案与验收矩阵
 
-- 状态：**阶段 0–6 测试、阶段 7 备份恢复/静态部署/安全扫描/Docker build/run（QEMU）已实际运行**；Compose/Caddy 容器编排、GitHub Actions 尚未执行。
+- 状态：**阶段 0–6 测试、阶段 7 备份恢复/静态部署/安全扫描/Docker build/run（QEMU）已实际运行**；Compose 编排、GitHub Actions 尚未执行；Docker 内 Caddy HTTPS 已通过。
 - 目标：覆盖分摊正确性、历史不可变、多用户隔离、Agent 受控、部署与恢复。
 - 原则：能用纯函数测的，不依赖数据库；必须测数据库事务的，用真实 PostgreSQL，不用 SQLite 替代。
 
@@ -129,7 +129,7 @@ node docs/audits/legacy-split-audit.mjs
 - Caddy 本机内部 CA 实跑：`https://localhost:8443/health/ready` 200、`/` 200、`/api/v1/meta` 200，HTTP 8080→8443 301。
 - 安全：`pip-audit 2.10.1` 未发现第三方依赖已知漏洞；CSP/安全头测试通过。
 - 已执行：Docker build/run（QEMU/boot2docker）、Caddy 本地 TLS。
-- 未执行：Compose/Caddy 容器编排、公网 ACME、GitHub Actions。
+- 未执行：Compose 编排、公网 ACME、GitHub Actions。
 - 详细报告：[phase-7-report.md](phase-7-report.md)、[backup-restore.md](backup-restore.md)、[security-review.md](security-review.md)。
 
 ---

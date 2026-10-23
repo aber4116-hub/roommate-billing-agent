@@ -31,7 +31,7 @@
 
 ### Known limitations
 
-- Docker build/run 已在 QEMU/boot2docker 验证；Compose/Caddy 容器编排未执行；
+- Docker build/run + Caddy HTTPS 已在 QEMU/boot2docker 验证；Compose 编排未执行；
 - 公网 ACME TLS、GitHub Actions 未执行；
 - 无 MFA、密码重置邮件、IP 限流；
 - 旧 Docker 19 seccomp 需调整；现代 Docker 默认 seccomp 未复测；

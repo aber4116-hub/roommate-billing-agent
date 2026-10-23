@@ -2,9 +2,9 @@
 
 合租账单分摊与结算 Agent。
 
-> Release candidate：`v0.1.0-rc.1`。Docker build/run 已在 QEMU 验证；Compose/Caddy/CI 与 GitHub push 尚未验证。
+> Release candidate：`v0.1.0-rc.1`。Docker build/run 已在 QEMU 验证；Docker 内 Caddy HTTPS 已验证；Compose/CI/GitHub push 尚未验证。
 
-> 当前状态：阶段 0–6 已完成；阶段 7 的备份恢复、Caddy 本地 TLS、Docker image build/run（QEMU）已实际通过；**Compose/Caddy 容器编排与 GitHub Actions 尚未执行**。不可按生产系统部署。
+> 当前状态：阶段 0–6 已完成；阶段 7 的备份恢复、Caddy 本地 TLS、Docker image build/run（QEMU）已实际通过；**Compose 编排与 GitHub Actions 尚未执行；Docker 内 Caddy HTTPS 已通过**。不可按生产系统部署。
 >
 > 原文件 `合租账单分摊器.html` 未被修改；只读副本在 `legacy/`。
 
@@ -130,7 +130,7 @@ node docs/audits/legacy-split-audit.mjs
 - 真实 `pg_dump` → `pg_restore` → 20 张表逐表比对 → 恢复库 `/health/ready` 200；
 - Caddy 2.11.7 内部 CA TLS 反代：`https://localhost:8443` 的 `/health/ready`、`/`、`/api/v1/meta` 均 200，HTTP 301；
 - `pip-audit` 未发现第三方依赖已知漏洞；
-- **Docker build/run 已在 QEMU TCG + boot2docker 19.03 实际通过**；Compose/Caddy 容器编排、公网 ACME、GitHub Actions 未执行。
+- **Docker build/run 已在 QEMU TCG + boot2docker 19.03 实际通过**；Compose 编排、公网 ACME、GitHub Actions 未执行；Docker 内 Caddy 已通过。
 
 详细结果见 [阶段 7 报告](docs/phase-7-report.md)、[备份恢复](docs/backup-restore.md)、[安全扫描](docs/security-review.md)。
 
@@ -176,7 +176,7 @@ curl -fsS https://<DOMAIN>/health/ready
 ```
 
 - 只发布 Caddy 80/443，Postgres/API 不映射公网；
-- 本机无 Docker daemon；已用 QEMU 完成 `docker build/run`，Compose/Caddy 容器编排未跑；
+- 本机无 Docker daemon；已用 QEMU 完成 `docker build/run` 和 Docker 内 Caddy HTTPS；Compose 编排未跑；
 - 备份/恢复脚本与实测见 [backup-restore.md](docs/backup-restore.md)。
 
 ## 已确认的决策

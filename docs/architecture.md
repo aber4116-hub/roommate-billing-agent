@@ -1,6 +1,6 @@
 # 阶段 1：技术选型与系统架构
 
-- 状态：阶段 0–6 已完成；阶段 7 备份/静态验证/Docker build/run（QEMU）已完成，Compose/Caddy 编排与 CI 未执行。
+- 状态：阶段 0–6 已完成；阶段 7 备份/静态验证/Docker build/run（QEMU）已完成，Compose 编排与 CI 未执行；Docker 内 Caddy HTTPS 已通过。
 - 目标：单实例、可多人访问、可审计、可备份的合租账单 Agent 系统。
 - 原则：账务正确性 > 历史可追溯性 > 数据安全 > 功能数量 > 技术新颖度。
 

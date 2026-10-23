@@ -28,6 +28,19 @@ GET /health/ready -> 200 {"status":"ok"}
 
 截图：`_runtime/docker-dashboard.png`。
 
+### Docker 内 Caddy HTTPS
+
+- 容器 `rba-caddy` 使用 `caddy:2-alpine`，挂载仓库 `Caddyfile`；
+- `DOMAIN=localhost`，Caddy 自动使用 internal CA；
+- SSH 隧道 `18443 -> VM 443`；
+- `https://localhost:18443/health/ready` -> 200；
+- HSTS/CSP/X-Frame-Options 生效；
+- API 以 `APP_BASE_URL=https://localhost:18443`、`SESSION_COOKIE_SECURE=true` 重启；
+- 浏览器 HTTPS 登录成功：12 cells / ¥493.05 / 无 JS 异常；
+- 截图：`_runtime/docker-caddy-dashboard.png`。
+
+说明：Caddy 使用本地 internal CA，浏览器首次访问会有证书提示；这不是公网 ACME。
+
 ---
 
 ## 2. 实际命令
@@ -103,7 +116,8 @@ Health check exceeded timeout (5s)
 ## 4. 未验证
 
 - `docker compose up`（只做了 `compose config`）；
-- Docker 内 Caddy / 公网 ACME；
+- Compose 编排；
+- 公网 ACME；
 - 镜像漏洞扫描（Trivy/Grype）、DAST；
 - 现代 Docker Engine 的默认 seccomp 复测；
 - 生产资源/并发/长期运行。

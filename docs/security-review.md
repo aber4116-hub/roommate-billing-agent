@@ -138,7 +138,9 @@ X-Frame-Options: DENY
 - **速率限制/WAF**：未实现；阶段 4 只有账户锁定。
 - **MFA**：未实现。
 - **备份异地/对象存储/加密**：未接入。
-- **CI 的 Docker job**：workflow 中已定义，但未在 GitHub 上验证。\n- **Compose/Caddy 容器编排**：只做 config/validate，未在 Docker 内实际 up。
+- **CI 的 Docker job**：workflow 中已定义，但未在 GitHub 上验证。
+- **Docker 内 Caddy HTTPS**：已启动 `caddy:2-alpine`，internal CA、HSTS/CSP、HTTPS 登录通过；公网 ACME 未验证。
+- **Compose 编排**：只做 config，未实际 up。
 
 ---
 
