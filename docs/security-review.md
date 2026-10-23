@@ -124,7 +124,7 @@ X-Frame-Options: DENY
 
 - `actionlint 1.7.12`：`.github/workflows/ci.yml` exit 0；
 - Workflow 包含 test 与 docker job；
-- 仅静态 lint，**未在 GitHub runner 运行**。
+- 已在 GitHub runner 运行：test + docker success。
 
 ---
 
@@ -149,14 +149,14 @@ HIGH 集中在 util-linux、ncurses、perl-base 等 Debian 基础镜像包；无
 ## 2. 未执行 / 未验证
 
 - **Docker 镜像构建与运行**：本机无 daemon；已用 QEMU TCG + boot2docker 19.03 执行 build/run，镜像 215MB、容器 healthy。旧 Docker 19 的 seccomp 需 `--security-opt seccomp=unconfined` 才能跑 Python 3.12/Argon2；现代 Docker 默认 seccomp 必须重新验证。
-- **GitHub Actions 实际运行**：本地没有 GitHub 远程仓库；只编写并静态检查 workflow，未在 GitHub runner 上跑。
+- **GitHub Actions**：已 push 并运行，test + docker 均 success（run 39899952496）。
 - **公网 TLS/ACME**：本地 internal CA 已跑通，但未配置公网域名/DNS，未做 ssllabs；生产证书续期未演练。
 - **容器镜像漏洞扫描**：已用 Trivy 0.76.1 扫描，170 findings（0 CRITICAL / 44 HIGH / 63 MEDIUM / 62 LOW / 1 UNKNOWN）；HIGH 均无修复版本，来自 Debian 13 基础镜像。
 - **DAST/渗透测试**：未执行。
 - **速率限制/WAF**：未实现；阶段 4 只有账户锁定。
 - **MFA**：未实现。
 - **备份异地/对象存储/加密**：未接入。
-- **CI 的 Docker job**：workflow 中已定义，但未在 GitHub 上验证。
+- **CI 的 Docker job**：已通过。
 - **Docker 内 Caddy HTTPS**：已启动 `caddy:2-alpine`，internal CA、HSTS/CSP、HTTPS 登录通过；公网 ACME 未验证。
 - **Compose 编排**：Compose v5.6.1 dev up 通过（db/api healthy）；QEMU 旧 Docker 需 seccomp/端口 override。
 

@@ -1,7 +1,7 @@
 # GitHub 仓库初始化、开源与发布流程
 
 - 目标：把项目整理成可公开审查、可复现测试、可安全部署的 GitHub 仓库。
-- 当前状态：MIT License 已创建；本地 Git 仓库已初始化并提交 `v0.1.0-rc.1`；**尚未创建 GitHub 远程仓库、未推送**。
+- 当前状态：**GitHub Public 仓库已推送；CI test+docker 均 success；Release `v0.1.0-rc.1` 已创建**。
 - 本文是阶段 8 的操作清单与本地交付记录。
 
 ---
@@ -13,8 +13,8 @@
 - `.env` 未入库；`.venv`/`_runtime`/覆盖率/缓存均忽略；
 - 从 bundle 克隆验证：tag 正确、文件完整、`LICENSE`/`web` 存在、无 `.env`；
 - GitHub Actions workflow 通过 actionlint 1.7.12 静态检查；
-- 未在 GitHub runner 实际运行。
-- 未配置 GitHub remote、未 push。
+- 已在 GitHub runner 实际运行：test + docker success。
+- 已推送 GitHub Public；CI success；Release 已创建。
 
 运行时产物（不提交仓库）：
 
@@ -326,7 +326,7 @@ permissions:
 - [x] 测试命令实际通过；
 - [ ] Docker Compose 启动（未执行）；
 - [x] 备份/恢复演练；
-- [ ] CI 绿（workflow 已写，未运行）。
+- [x] CI 绿（run 39899952496，test+docker success）。
 
 ### 6.3 文档
 
@@ -438,7 +438,7 @@ permissions:
 
 ## 11. 当前阶段与下一步
 
-- 当前：阶段 0–6 完成；阶段 7 的 Docker build/run（QEMU）/备份恢复/Caddy 本地 TLS 已完成，Compose 编排与 CI 未执行；Docker 内 Caddy HTTPS 已通过；MIT、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建，未 push。
+- 当前：阶段 0–8 完成；Docker build/run、Compose dev up、Docker Caddy HTTPS、备份恢复、GitHub CI `test`+`docker`、Release `v0.1.0-rc.1` 均完成；仓库为 Public。
 - 阶段 3 起继续实现数据库/API，阶段 8 才执行：
   - 创建 LICENSE；
   - 完成 README；

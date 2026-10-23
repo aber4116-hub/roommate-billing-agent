@@ -7,7 +7,7 @@
 - 阶段 5 状态：Agent/Provider/工具/确认已完成，157 个测试通过，覆盖率 88%。
 - 阶段 6 状态：前端/旧 DOM 契约/CSP/Chrome E2E 已完成，160 个测试通过，覆盖率 88%。
 - 阶段 7 状态：备份恢复、本地 Caddy TLS、Docker build/run（QEMU）、静态验证已执行；Compose dev up、Docker 内 Caddy HTTPS 已通过；CI 未执行。
-- 阶段 8 状态：MIT、README/CONTRIBUTING/SECURITY/CHANGELOG、本地 Git `v0.1.0-rc.1`、bundle/zip 已创建；未配置 GitHub 远程。
+- 阶段 8 状态：MIT、社区文档、GitHub Public 仓库、CI test+docker success、Release `v0.1.0-rc.1` 已完成。
 - 项目根目录：`roommate-billing-agent/`
 - 旧版文件：原路径未修改；只读副本 `legacy/合租账单分摊器.html`。
 - Docker 镜像已在 QEMU/boot2docker 实际 build/run；生产宿主与 Compose 编排未验证。
@@ -126,7 +126,7 @@ node docs/audits/legacy-split-audit.mjs
 - 本地 Git：`main`，tag `v0.1.0-rc.1`（commit 由 tag 指向）。
 - bundle/zip：`_runtime/roommate-billing-agent-v0.1.0-rc.1.{bundle,zip}`；SHA-256 见 `_runtime/SHA256SUMS`。
 - bundle 克隆验证：tag 正确、文件完整、无 `.env`。
-- **未创建 GitHub 远程、未 push、未运行 Actions。**
+- **GitHub Public 仓库已推送；CI test+docker success；Release 已创建。**
 
 ## 设计摘要
 
@@ -137,7 +137,7 @@ node docs/audits/legacy-split-audit.mjs
 - Agent 只调用白名单工具；写工具只创建待确认动作；模型不能确认。
 - 服务端会话 + HttpOnly Cookie + CSRF；账本隔离 + 复合外键。
 - Docker Compose + Caddy HTTPS；每日 `pg_dump` + 恢复演练。
-- MIT License 已创建；本地 release candidate，未配置 GitHub 远程。
+- MIT License；GitHub Public 仓库，CI success，Release 已创建。
 
 ## 未验证声明
 

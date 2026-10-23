@@ -1,10 +1,12 @@
 # roommate-billing-agent
 
+[![CI](https://github.com/aber4116-hub/roommate-billing-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/aber4116-hub/roommate-billing-agent/actions/workflows/ci.yml)
+
 合租账单分摊与结算 Agent。
 
-> Release candidate：`v0.1.0-rc.1`。Docker build/run 已在 QEMU 验证；Docker 内 Caddy HTTPS 与 Compose dev up 已验证；CI/GitHub push 尚未验证。
+> Release candidate：`v0.1.0-rc.1`。GitHub：https://github.com/aber4116-hub/roommate-billing-agent （Public）。CI 已通过；Docker build/run、Compose dev up、Docker Caddy HTTPS 已验证。
 
-> 当前状态：阶段 0–6 已完成；阶段 7 的备份恢复、Caddy 本地 TLS、Docker image build/run（QEMU）已实际通过；**GitHub Actions 尚未执行；Docker 内 Caddy HTTPS 与 Compose dev up 已通过**。不可按生产系统部署。
+> 当前状态：阶段 0–8 已完成；备份恢复、Docker image build/run、Compose dev up、Docker Caddy HTTPS、GitHub Actions 均已实际通过。仍不可按生产系统直接部署（见限制）。
 >
 > 原文件 `合租账单分摊器.html` 未被修改；只读副本在 `legacy/`。
 
@@ -144,7 +146,7 @@ node docs/audits/legacy-split-audit.mjs
 - 本地 Git tag `v0.1.0-rc.1`；
 - tracked files 以 `git ls-files` 为准；`.env`/`.venv`/运行时不在库；
 - bundle/zip 已生成并做 clone 校验；
-- **尚未配置 GitHub remote、未 push、未运行 Actions**。
+- **已 push 到 Public GitHub，CI `test` + `docker` 两个 job 通过，Release `v0.1.0-rc.1` 已创建**。
 
 ## 本地运行
 
@@ -188,12 +190,12 @@ curl -fsS https://<DOMAIN>/health/ready
 - 入住天数：整数 0–31；
 - 规则确认工具不暴露给模型，必须用户点击确认；
 - 旧版页面保留在 `legacy/`；
-- 许可证：MIT；当前只做本地 Git 交付，仓库默认 Private，待运行时验收后再决定公开。
+- 许可证：MIT；GitHub 仓库当前为 Public；`legacy/` 文件不在 MIT 范围。
 
 ## 下一步
 
-本地交付已完成；剩余：提供 GitHub 远程并 push、在 Docker 环境执行 build/up + 公网 ACME TLS + Actions；通过后再发布正式版。
+GitHub 交付、CI、Release 已完成；剩余：公网 ACME TLS、DAST、现代 Docker 默认 seccomp 复测。
 
 ## 许可证
 
-[MIT](LICENSE)（新代码）。`legacy/合租账单分摊器.html` 是用户提供的参考资料，**不在 MIT 范围内**，公开仓库前需确认权利或移除；见 [NOTICE](NOTICE) 与 [legacy 说明](legacy/README.md)。当前没有 GitHub 远程仓库；本地 release candidate 与推送步骤见 [GitHub 发布文档](docs/github-release.md)。
+[MIT](LICENSE)（新代码）。`legacy/合租账单分摊器.html` 是用户提供的参考资料，**不在 MIT 范围内**，公开仓库前需确认权利或移除；见 [NOTICE](NOTICE) 与 [legacy 说明](legacy/README.md)。GitHub：https://github.com/aber4116-hub/roommate-billing-agent （Public，CI 通过，Release `v0.1.0-rc.1`）。

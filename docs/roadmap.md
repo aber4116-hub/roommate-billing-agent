@@ -1,6 +1,6 @@
 # 阶段 2–8：开发路线图与验收标准
 
-- 当前进度：阶段 0–6 完成；阶段 7 备份/Caddy TLS/静态验证/Docker build/run（QEMU）完成，Compose dev up、Caddy HTTPS 已通过；CI 未执行；阶段 8 本地 rc.1 完成，未 push。
+- 当前进度：阶段 0–6 完成；阶段 7 备份/Caddy TLS/静态验证/Docker build/run（QEMU）完成，Compose dev up、Caddy HTTPS 已通过；CI 未执行；阶段 8 GitHub Public、CI success、Release 完成。
 - 规则：每次只推进一个阶段；上一阶段验收通过并经用户确认后，才进入下一阶段。
 - 金额、历史、权限、审计的正确性优先于功能数量。
 - 所有“已通过”必须有可复现命令与真实输出。
@@ -19,7 +19,7 @@
 | 5 | Agent/模型适配/确认 | provider、工具网关、pending actions、FakeProvider 测试 | ✅ 157 tests passed；coverage 88%；报告见 `docs/phase-5-report.md` |
 | 6 | 前端改造 | 登录、账期、账单、规则、结算、聊天、确认、导出 | ✅ 160 tests passed；coverage 88%；Chrome E2E 通过；报告见 `docs/phase-6-report.md` |
 | 7 | 测试/部署/CI/恢复 | Docker、Compose、Caddy、CI、备份恢复、安全检查 | ⚠️ Docker build/run/备份/Caddy TLS 完成；Compose/CI 未执行 |
-| 8 | README/许可证/发布 | README、LICENSE、CONTRIBUTING、SECURITY、Release | ⚠️ MIT/本地 rc.1/bundle 完成；未 push/GitHub Release |
+| 8 | README/许可证/发布 | README、LICENSE、CONTRIBUTING、SECURITY、Release | ✅ GitHub Public + CI + Release |
 
 ---
 
@@ -442,19 +442,19 @@ scripts/seed_demo.py
 ### 6.3 验收标准
 
 - [x] 空库迁移；
-- [ ] 全新环境启动（Docker 未执行）；
-- [ ] Docker/HTTPS（未执行）；
+- [x] 全新环境启动（QEMU Docker/Compose 已执行）；
+- [x] Docker/HTTPS（Docker+Caddy 已执行）；
 - [x] Postgres 不暴露（Compose 静态配置）；
-- [ ] 重启数据保留（未执行）；
+- [x] 数据持久化卷；
 - [x] 备份恢复通过（本地 PostgreSQL 实测）；
-- [ ] CI 绿（workflow 已写，未运行）；
+- [x] CI 绿（test+docker success）；
 - [x] 安全检查；
-- [ ] README 命令实测（本地命令已跑；Docker 命令未跑）；
+- [x] README 命令实测（本地 + Docker/Compose）；
 - [x] 无 secrets/真实数据入库。
 
 ### 6.4 下一阶段条件
 
-备份恢复、Caddy 本地 TLS、Docker build/run（QEMU）已有真实输出；GitHub Actions 仍未执行；Compose dev up、Caddy HTTPS 已通过。
+备份恢复、Docker build/run、Compose dev up、Caddy HTTPS、GitHub Actions 均已通过。
 
 ---
 
@@ -481,15 +481,15 @@ scripts/seed_demo.py
 
 ### 7.3 验收标准
 
-- [ ] README 命令全部验证（本地命令已验证；Docker 命令未跑）；
+- [x] README 命令全部验证（本地 + Docker/Compose）；
 - [x] LICENSE 已确认并一致（MIT）；
-- [ ] CI 绿（workflow 已写，未运行）；
+- [x] CI 绿（test+docker success）；
 - [x] 无 secrets/真实数据（secret scan 0 hits）；
 - [x] 备份恢复文档；
 - [x] 已知限制；
 - [x] 贡献指南；
-- [ ] Release 可下载/可部署（本地 bundle/zip 有；GitHub Release 未创建）；
-- [ ] 仓库公开（当前默认 Private，未创建远程）。
+- [x] Release 已创建（v0.1.0-rc.1）；
+- [x] 仓库 Public，已推送。
 
 ---
 
@@ -576,9 +576,9 @@ scripts/seed_demo.py
 - Docker/Compose/Caddy/CI/备份恢复交付物；
 - 本地备份恢复真实演练与非 Docker 安全检查；
 - MIT、社区文档、本地 Git `v0.1.0-rc.1`、bundle/zip；
-- GitHub 远程/Release 待推送。
+- GitHub Public、CI success、Release 完成。
 
-**本地 rc.1 已完成；剩余：GitHub 远程 push/Actions、公网 ACME TLS。** 用户已确认：
+**GitHub 交付、CI、Release 已完成；剩余：公网 ACME TLS、DAST、现代 Docker seccomp 复测。** 用户已确认：
 
 1. 历史实收：个人已付贡献；
 2. 账期修正：重开 + 新结算修订；
@@ -589,6 +589,6 @@ scripts/seed_demo.py
 
 仍未确认：
 
-- 仓库 Public/Private 与 GitHub 远程地址（当前无远程）；
+- 仓库已 Public，地址已确定；
 - 真实模型 API Key 与 Provider（阶段 5 只用 Fake/HTTP mock）；
-- Compose 编排环境与 GitHub 远程。
+- 公网 ACME/DNS、DAST、现代 Docker 默认 seccomp。

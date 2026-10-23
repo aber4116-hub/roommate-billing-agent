@@ -1,6 +1,6 @@
 # 测试方案与验收矩阵
 
-- 状态：**阶段 0–6 测试、阶段 7 备份恢复/静态部署/安全扫描/Docker build/run（QEMU）已实际运行**；Compose 编排、GitHub Actions 尚未执行；Docker 内 Caddy HTTPS 已通过。
+- 状态：**阶段 0–6 测试、阶段 7 备份恢复/静态部署/安全扫描/Docker build/run（QEMU）已实际运行**；Docker 内 Caddy HTTPS、GitHub Actions test+docker 已通过。
 - 目标：覆盖分摊正确性、历史不可变、多用户隔离、Agent 受控、部署与恢复。
 - 原则：能用纯函数测的，不依赖数据库；必须测数据库事务的，用真实 PostgreSQL，不用 SQLite 替代。
 

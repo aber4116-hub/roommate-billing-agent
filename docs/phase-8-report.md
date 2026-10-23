@@ -1,6 +1,6 @@
 # 阶段 8 报告：文档、许可证与本地 GitHub 交付
 
-- 状态：**本地 release candidate 已完成；尚未创建 GitHub 远程仓库、未 push**。
+- 状态：**已 push 到 GitHub Public 仓库；CI 两个 job 通过；Release `v0.1.0-rc.1` 已创建**。
 - 版本：`v0.1.0-rc.1`。
 - 许可证：MIT（`legacy/` 用户提供文件除外，见 `NOTICE`）。
 - Docker build/run 已在 QEMU/boot2docker 实际通过；GitHub Actions 仍未验证；Docker 内 Caddy HTTPS 与 Compose dev up 已通过；本版本不是生产就绪版。
@@ -67,9 +67,9 @@ _runtime/SHA256SUMS
 
 | 项 | 原因 |
 |---|---|
-| GitHub 远程仓库 | 本机没有 `gh`、`GITHUB_TOKEN`、远程 URL |
-| `git push` / PR / Release | 同上 |
-| GitHub Actions 首次运行 | 无远程仓库 |
+| GitHub 远程仓库 | ✅ https://github.com/aber4116-hub/roommate-billing-agent |
+| `git push` / Release | ✅ main+tag 已推送；Release 已创建 |
+| GitHub Actions | ✅ test + docker 均 success |
 | Docker build/run | 已用 QEMU TCG + boot2docker 完成；Caddy HTTPS 通过 |
 | 公网 ACME TLS | 无域名/DNS/公网入口 |
 | 公开仓库 | 默认 Private；`legacy/` 权利未确认，公开前需移除或取得许可 |

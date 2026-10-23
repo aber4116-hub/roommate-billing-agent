@@ -94,7 +94,7 @@ exit=0
 
 - `actionlint 1.7.12`：`.github/workflows/ci.yml` 通过（exit 0）；
 - workflow YAML 可解析（PyYAML），包含 test/docker 两个 job；
-- **未在 GitHub runner 实际运行**。
+- 已在 GitHub runner 实际运行：test + docker success。
 
 ### 2.7 CI 本地等价检查
 
@@ -137,7 +137,7 @@ Docker 内 Caddy HTTPS、Compose dev up 已通过。限制：Compose 用了 QEMU
 | `docker compose up` | Compose v5.6.1 dev + QEMU override | **已执行**（db/api healthy） |
 | Caddy 容器 HTTPS | 已用 caddy:2-alpine + internal CA | **已执行** |
 | Caddy 公网 ACME TLS | 无公网域名/DNS | **未执行** |
-| GitHub Actions 运行 | 无远程仓库/未 push | **未执行** |
+| GitHub Actions 运行 | 已 push；run 39899952496 | **已执行**：test + docker success |
 | 镜像漏洞扫描（Trivy） | Trivy 0.76.1 | **已执行**：0 CRITICAL / 44 HIGH（均无修复） |
 | DAST/渗透 | 未安排 | **未执行** |
 | 对象存储/异地备份 | 未接入 | **未执行** |
@@ -146,7 +146,7 @@ Docker 内 Caddy HTTPS、Compose dev up 已通过。限制：Compose 用了 QEMU
 因此：
 
 - 不声称“全新环境部署通过”；
-- 不声称“CI 绿”；
+- CI 已绿（run 39899952496，test+docker success）；
 - 不声称“HTTPS 已上线”。
 
 ---
