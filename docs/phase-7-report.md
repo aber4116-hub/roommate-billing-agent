@@ -138,7 +138,7 @@ Docker 内 Caddy HTTPS、Compose dev up 已通过。限制：Compose 用了 QEMU
 | Caddy 容器 HTTPS | 已用 caddy:2-alpine + internal CA | **已执行** |
 | Caddy 公网 ACME TLS | 无公网域名/DNS | **未执行** |
 | GitHub Actions 运行 | 无远程仓库/未 push | **未执行** |
-| 镜像漏洞扫描（Trivy/Grype） | 镜像已构建，未安装扫描器 | **未执行** |
+| 镜像漏洞扫描（Trivy） | Trivy 0.76.1 | **已执行**：0 CRITICAL / 44 HIGH（均无修复） |
 | DAST/渗透 | 未安排 | **未执行** |
 | 对象存储/异地备份 | 未接入 | **未执行** |
 | 备份加密 | 未实现 | **未执行** |

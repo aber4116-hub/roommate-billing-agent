@@ -68,6 +68,28 @@ UI 登录：12 cells / ¥493.05 / 无 JS 异常；截图 `_runtime/compose-dashb
 
 生产 Compose 配置本身未改；现代 Docker 上应重新验证默认 seccomp。
 
+### Trivy 镜像扫描
+
+```text
+trivy 0.76.1
+image: roommate-billing-agent:qemu
+OS: debian 13.7
+```
+
+结果：
+
+```text
+total 170
+CRITICAL 0
+HIGH 44
+MEDIUM 63
+LOW 62
+UNKNOWN 1
+HIGH/CRITICAL with fixed version: 0
+```
+
+44 个 HIGH 均来自 Debian 13 基础镜像的 util-linux/ncurses/perl 等，当前无修复版本；没有 CRITICAL。JSON 在 `_runtime/trivy.json`。
+
 ---
 
 ## 2. 实际命令

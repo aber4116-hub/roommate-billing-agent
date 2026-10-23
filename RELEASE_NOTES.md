@@ -34,7 +34,7 @@ pip-audit: no known third-party vulnerabilities
 - 生产 Compose 的 Caddy/ACME（dev Compose up 已在 QEMU 验证）；
 - 公网 ACME TLS；
 - GitHub Actions 首次运行（无远程仓库）；
-- 镜像漏洞扫描/DAST；
+- DAST；Trivy 扫描已执行：0 CRITICAL / 44 HIGH（基础镜像，无修复）；
 - 真实模型 Key/生产模型调用。
 
 ## 安装

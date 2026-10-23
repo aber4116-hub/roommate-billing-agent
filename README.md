@@ -130,6 +130,7 @@ node docs/audits/legacy-split-audit.mjs
 - 真实 `pg_dump` → `pg_restore` → 20 张表逐表比对 → 恢复库 `/health/ready` 200；
 - Caddy 2.11.7 内部 CA TLS 反代：`https://localhost:8443` 的 `/health/ready`、`/`、`/api/v1/meta` 均 200，HTTP 301；
 - `pip-audit` 未发现第三方依赖已知漏洞；
+- Trivy 镜像扫描：0 CRITICAL / 44 HIGH（均为 Debian 13 基础镜像、无修复版本）；
 - **Docker build/run 已在 QEMU TCG + boot2docker 19.03 实际通过**；Compose dev up、Docker 内 Caddy 已通过；公网 ACME、GitHub Actions 未执行。
 
 详细结果见 [阶段 7 报告](docs/phase-7-report.md)、[备份恢复](docs/backup-restore.md)、[安全扫描](docs/security-review.md)。
